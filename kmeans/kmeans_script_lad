@@ -1,0 +1,172 @@
+#!/bin/bash
+
+################-> are comments
+################-> "#PBS" are Batch Script commands
+
+#PBS -m abe
+
+################ Verbose mode
+
+#PBS -V
+
+################
+
+################ Change these parameters according to your requisites
+
+########PBS -l nodes=1:ppn=16:cluster-Atlantica,walltime=05:00:00
+#PBS -l nodes=1:ppn=24:cluster-Cerrado,walltime=999:00:00
+
+################ Where:
+################ nodes = number of nodes requested
+################ ppn = number of cores per node
+################ cluster-Atlantica / cluster-Gates = cluster name
+################ walltime = max allocation time
+
+################ Please, change this e-mail address to yours
+
+####PBS -M user.name@acad.pucrs.br
+#PBS -M gabriell.araujo@acad.pucrs.br
+
+################
+
+#PBS -r n
+
+################ Output options
+
+#PBS -j oe
+
+################
+
+################ Please, change this directory to your working dir.
+
+####PBS -d /home/user.name/exemplos/torque
+#PBS -d /home/gabriell.araujo/
+
+################qsub -I -V -d /home/gabriell.araujo/job -l nodes=1:cluster-Cerrado:ppn=24,walltime=00:15:00
+
+################
+echo Running on host `hostname`
+echo
+echo Initial Time is `date`
+echo
+echo Directory is `pwd`
+echo
+echo This jobs runs on the following nodes:
+echo `cat $PBS_NODEFILE | uniq`
+echo
+echo JOB_ID:
+echo `echo $PBS_JOBID`
+echo ################
+
+############# Command example, if using MPI
+
+#mpirun -machinefile nodefile -np 16 program_mpi
+
+################
+
+############# If running a sequential or openMP program
+
+#./program
+
+####SCRIPT GMAP####
+#source /usr/local/GCC/gcc-5.3.0-vars.sh
+#source LIBRARIES/tbb/tbb_vars.sh intel64
+
+export FF_ROOT="/home/gabriell.araujo/LIBRARIES/fastflow"
+
+cd PHOENIX_ALGORITHMS
+cd tests
+cd kmeans
+
+mkdir logs
+
+g++ -O3 gerador_data_set.cpp -o gerador_data_set
+
+g++ -O3 kmeans-seq.cpp -o main1 -I /home/gabriell.araujo/LIBRARIES/upl/include/upl -L /home/gabriell.araujo/LIBRARIES/upl/lib -lupl -lm
+
+g++ -O3 kmeans-openmp.cpp -fopenmp -o main2 -I /home/gabriell.araujo/LIBRARIES/upl/include/upl -L /home/gabriell.araujo/LIBRARIES/upl/lib -lupl -lm
+
+g++ -O3 -std=c++11 -I$FF_ROOT kmeans-ff.cpp -o main3 -pthread -I /home/gabriell.araujo/LIBRARIES/upl/include/upl -L /home/gabriell.araujo/LIBRARIES/upl/lib -lupl -lm
+
+g++ -O3 -std=c++1y kmeans-tbb.cpp -o main4 -ltbb -I /home/gabriell.araujo/LIBRARIES/upl/include/upl -L /home/gabriell.araujo/LIBRARIES/upl/lib -lupl -lm
+
+g++ -O3 kmeans-pthread.cpp -lpthread -o main5 -I /home/gabriell.araujo/LIBRARIES/upl/include/upl -L /home/gabriell.araujo/LIBRARIES/upl/lib -lupl -lm
+
+/home/gabriell.araujo/LIBRARIES/spar/bin/spar -std=c++1y -spar_file kmeans-spar.cpp -O3 -o main6 -I /home/gabriell.araujo/LIBRARIES/upl/include/upl -L /home/gabriell.araujo/LIBRARIES/upl/lib -lupl -lm
+
+####parametros: 3 x (pontos centroides dimensao grid)
+./gerador_data_set 10000 1000 2 15000 50000 5000 2 15000 100000 10000 2 15000
+
+####sequencial
+for data_set in 1 2 3
+do
+	for execucoes in 1 2 3 4 5 6 7 8 9 10
+	do
+		sudo ./main1 $data_set >> logs/seq-log-data-$data_set.txt		
+	done
+done
+
+####openmp
+for data_set in 1 2 3
+do
+	for numero_threads in 1 2 3 4 5 6 7 8 9 10 11 12
+	do
+		for execucoes in 1 2 3 4 5 6 7 8 9 10
+		do
+			sudo ./main2 $data_set $numero_threads >> logs/openmp-log-data-$data_set-threads-$numero_threads.txt
+		done
+	done
+done
+
+####fastflow
+for data_set in 1 2 3
+do
+	for numero_threads in 1 2 3 4 5 6 7 8 9 10 11 12
+	do
+		for execucoes in 1 2 3 4 5 6 7 8 9 10
+		do
+			sudo ./main3 $data_set $numero_threads >> logs/fastflow-log-data-$data_set-threads-$numero_threads.txt
+		done
+	done
+done
+
+####tbb
+for data_set in 1 2 3
+do
+	for numero_threads in 1 2 3 4 5 6 7 8 9 10 11 12
+	do
+		for execucoes in 1 2 3 4 5 6 7 8 9 10
+		do
+			sudo ./main4 $data_set $numero_threads >> logs/tbb-log-data-$data_set-threads-$numero_threads.txt
+		done
+	done
+done
+
+####pthread
+for data_set in 1 2 3
+do
+	for numero_threads in 1 2 3 4 5 6 7 8 9 10 11 12
+	do
+		for execucoes in 1 2 3 4 5 6 7 8 9 10
+		do
+			sudo ./main5 $data_set $numero_threads >> logs/pthread-log-data-$data_set-threads-$numero_threads.txt
+		done
+	done
+done
+
+####spar
+for data_set in 1 2 3
+do
+	for numero_threads in 1 2 3 4 5 6 7 8 9 10 11 12
+	do
+		for execucoes in 1 2 3 4 5 6 7 8 9 10
+		do
+            export SPAR_NUM_WORKERS=$numero_threads
+			sudo ./main6 $data_set $numero_threads >> logs/spar-log-data-$data_set-threads-$numero_threads.txt
+		done
+	done
+done
+
+################
+
+echo Final Time is `date`
