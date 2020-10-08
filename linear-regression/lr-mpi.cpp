@@ -10,12 +10,12 @@
 
 using namespace std;
 
-vector<vector<dataset::Point>> load_dataset(long long bucket_size,
-                                            int number_buckets) {
+vector<vector<dataset::Point>> load_dataset(unsigned long long int bucket_size,
+                                            unsigned int number_buckets) {
     double begin = MPI_Wtime();
 
     vector<vector<dataset::Point>> buckets_points;
-    for (int i = 0; i < number_buckets; i++) {
+    for (unsigned int i = 0; i < number_buckets; i++) {
         buckets_points.push_back(dataset::get_dataset(bucket_size));
     }
     double end = MPI_Wtime();
@@ -28,12 +28,12 @@ tuple<double, double, double> execute_lr(vector<dataset::Point> points) {
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
     size_t n = points.size();
-    long long x_sum = 0;
-    long long y_sum = 0;
-    long long x_squared_sum = 0;
-    long long xy_sum = 0;
+    unsigned long long int x_sum = 0;
+    unsigned long long int y_sum = 0;
+    unsigned long long int x_squared_sum = 0;
+    unsigned long long int xy_sum = 0;
 
-    for (long long i = 0; i < n; i++) {
+    for (unsigned long long int i = 0; i < n; i++) {
         int x_aux = points.at(i).x;
         int y_aux = points.at(i).y;
 
@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
     int my_rank;
     int num_processes;
     int tag = 1;
-    long long bucket_size = atoll(argv[1]);
+    unsigned long long int bucket_size = atoll(argv[1]);
 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
@@ -91,9 +91,9 @@ int main(int argc, char **argv) {
 
         double begin = MPI_Wtime();
         for (int i = 0; i < buckets_points.size(); i++) {
-            vector<dataset::Point> points = buckets_points.at(i);
+            vector<dataset::Point> bucket_points = buckets_points.at(i);
 
-            MPI_Send(&points[0], bucket_size, MPI_POINT_TYPE, i + 1, tag,
+            MPI_Send(&bucket_points[0], bucket_size, MPI_POINT_TYPE, i + 1, tag,
                      MPI_COMM_WORLD);
         }
         /* for (int i = 1; i < num_processes; i++) { */

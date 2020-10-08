@@ -9,7 +9,8 @@
 
 using namespace std;
 
-vector<dataset::Point> load_dataset(long long bucket_size, int number_buckets) {
+vector<dataset::Point> load_dataset(unsigned long long int bucket_size,
+                                    unsigned int number_buckets) {
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
     vector<dataset::Point> points =
@@ -25,13 +26,13 @@ vector<dataset::Point> load_dataset(long long bucket_size, int number_buckets) {
 tuple<double, double, double> execute_lr(vector<dataset::Point> points) {
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
-    long long x_sum = 0;
-    long long y_sum = 0;
-    long long x_squared_sum = 0;
-    long long xy_sum = 0;
+    unsigned long long int x_sum = 0;
+    unsigned long long int y_sum = 0;
+    unsigned long long int x_squared_sum = 0;
+    unsigned long long int xy_sum = 0;
     int n = (int)points.size();
 
-    for (long long i = 0; i < n; i++) {
+    for (unsigned long long int i = 0; i < n; i++) {
         int x_aux = points.at(i).x;
         int y_aux = points.at(i).y;
 
@@ -55,8 +56,8 @@ tuple<double, double, double> execute_lr(vector<dataset::Point> points) {
 }
 
 int main(int argc, char **argv) {
-    long long bucket_size = atoll(argv[1]);
-    int number_buckets = atoll(argv[2]);
+    unsigned long long int bucket_size = atoll(argv[1]);
+    unsigned int number_buckets = atoi(argv[2]);
     vector<dataset::Point> points = load_dataset(bucket_size, number_buckets);
     tuple<double, double, double> results = execute_lr(points);
 
