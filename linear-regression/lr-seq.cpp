@@ -13,7 +13,7 @@ vector<dataset::Point> load_dataset(long long bucket_size, int number_buckets) {
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
     vector<dataset::Point> points =
-        dataset::get_dataset(bucket_size * number_buckets, 10);
+        dataset::get_dataset(bucket_size * number_buckets);
 
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
     double total_time =
@@ -29,7 +29,7 @@ tuple<double, double, double> execute_lr(vector<dataset::Point> points) {
     long long y_sum = 0;
     long long x_squared_sum = 0;
     long long xy_sum = 0;
-    size_t n = points.size();
+    int n = (int)points.size();
 
     for (long long i = 0; i < n; i++) {
         int x_aux = points.at(i).x;
@@ -48,6 +48,7 @@ tuple<double, double, double> execute_lr(vector<dataset::Point> points) {
 
     double slope = ((double)(n * xy_sum - x_sum * y_sum)) /
                    ((double)(n * x_squared_sum - x_sum * x_sum));
+    cout << slope << endl;
     double intercept = ((double)(y_sum - slope * x_sum)) / n;
 
     return make_tuple(total_time, slope, intercept);
@@ -60,6 +61,11 @@ int main(int argc, char **argv) {
     tuple<double, double, double> results = execute_lr(points);
 
     double total_time = get<0>(results);
+    double slope = get<1>(results);
+    double intercept = get<2>(results);
     cout << "Time linear regression (ms): " << total_time << endl;
+    cout << "Slope: " << slope << endl;
+    cout << "Intercept: " << intercept << endl;
+
     return 0;
 }

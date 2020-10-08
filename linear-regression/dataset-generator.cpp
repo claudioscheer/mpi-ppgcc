@@ -1,20 +1,21 @@
 #include <iostream>
 #include <vector>
 
-namespace dataset {
-
 using namespace std;
+
+namespace dataset {
 struct Point {
-    int x;
-    int y;
+    long long x;
+    long long y;
 };
 
-vector<Point> get_dataset(long long size, int values_interval) {
+const int MOD_VALUE_X = 11;
+const int MOD_VALUE_Y = 2;
+
+vector<Point> get_dataset(long long size) {
     vector<Point> points;
     for (long long i = 0; i < size; i++) {
-        Point p;
-        p.x = rand() % values_interval;
-        p.y = rand() % values_interval;
+        Point p = {.x = i % MOD_VALUE_X, .y = i % MOD_VALUE_Y};
         points.push_back(p);
     }
     return points;

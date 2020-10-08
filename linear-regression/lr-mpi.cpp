@@ -16,7 +16,7 @@ vector<vector<dataset::Point>> load_dataset(long long bucket_size,
 
     vector<vector<dataset::Point>> buckets_points;
     for (int i = 0; i < number_buckets; i++) {
-        buckets_points.push_back(dataset::get_dataset(bucket_size, 10));
+        buckets_points.push_back(dataset::get_dataset(bucket_size));
     }
     double end = MPI_Wtime();
     double total_time = end - begin;
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
     int block_lengths[count] = {1, 1};
     MPI_Aint displacements[count] = {offsetof(dataset::Point, x),
                                      offsetof(dataset::Point, y)};
-    MPI_Datatype types[count] = {MPI_INT, MPI_INT};
+    MPI_Datatype types[count] = {MPI_LONG_LONG, MPI_LONG_LONG};
     MPI_Type_create_struct(count, block_lengths, displacements, types,
                            &MPI_POINT_TYPE);
     MPI_Type_commit(&MPI_POINT_TYPE);
@@ -106,5 +106,6 @@ int main(int argc, char **argv) {
         cout << "Time linear regression (ms): " << total_time << endl;
     }
     MPI_Finalize();
+
     return 0;
 }
