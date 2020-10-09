@@ -10,6 +10,13 @@
 
 using namespace std;
 
+struct RegressionSubResults {
+    unsigned long long int x_sum;
+    unsigned long long int y_sum;
+    unsigned long long int x_squared_sum;
+    unsigned long long int xy_sum;
+};
+
 vector<vector<dataset::Point>> load_dataset(unsigned long long int bucket_size,
                                             unsigned int number_buckets) {
     double begin = MPI_Wtime();
@@ -20,18 +27,16 @@ vector<vector<dataset::Point>> load_dataset(unsigned long long int bucket_size,
     }
     double end = MPI_Wtime();
     double total_time = end - begin;
-    cout << "Time load dataset (ms): " << total_time << endl;
+    cout << "Time load dataset (s): " << total_time << endl;
     return buckets_points;
 }
 
-tuple<double, double, double> execute_lr(vector<dataset::Point> points) {
-    chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-
-    size_t n = points.size();
+RegressionSubResults execute_lr(vector<dataset::Point> points) {
     unsigned long long int x_sum = 0;
     unsigned long long int y_sum = 0;
     unsigned long long int x_squared_sum = 0;
     unsigned long long int xy_sum = 0;
+    int n = (int)points.size();
 
     for (unsigned long long int i = 0; i < n; i++) {
         int x_aux = points.at(i).x;
@@ -44,15 +49,12 @@ tuple<double, double, double> execute_lr(vector<dataset::Point> points) {
         xy_sum += x_aux * y_aux;
     }
 
-    chrono::steady_clock::time_point end = chrono::steady_clock::now();
-    double total_time =
-        chrono::duration_cast<chrono::milliseconds>(end - begin).count();
-
-    double slope = ((double)(n * xy_sum - x_sum * y_sum)) /
-                   ((double)(n * x_squared_sum - x_sum * x_sum));
-    double intercept = ((double)(y_sum - slope * x_sum)) / n;
-
-    return make_tuple(total_time, slope, intercept);
+    return {
+        .x_sum = x_sum,
+        .y_sum = y_sum,
+        .x_squared_sum = x_squared_sum,
+        .xy_sum = xy_sum,
+    };
 }
 
 int main(int argc, char **argv) {
@@ -66,25 +68,43 @@ int main(int argc, char **argv) {
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
 
     MPI_Datatype MPI_POINT_TYPE;
-    const int count = 2;
-    int block_lengths[count] = {1, 1};
-    MPI_Aint displacements[count] = {offsetof(dataset::Point, x),
-                                     offsetof(dataset::Point, y)};
-    MPI_Datatype types[count] = {MPI_LONG_LONG, MPI_LONG_LONG};
-    MPI_Type_create_struct(count, block_lengths, displacements, types,
-                           &MPI_POINT_TYPE);
+    int block_lengths_point[2] = {1, 1};
+    MPI_Aint displacements_point[2] = {offsetof(dataset::Point, x),
+                                       offsetof(dataset::Point, y)};
+    MPI_Datatype types_point[2] = {MPI_INT, MPI_INT};
+    MPI_Type_create_struct(2, block_lengths_point, displacements_point,
+                           types_point, &MPI_POINT_TYPE);
     MPI_Type_commit(&MPI_POINT_TYPE);
+
+    MPI_Datatype MPI_REGRESSION_SUB_RESULTS_TYPE;
+    int block_lengths_regression_sub_results[4] = {1, 1, 1, 1};
+    MPI_Aint displacements_regression_sub_results[4] = {
+        offsetof(RegressionSubResults, x_sum),
+        offsetof(RegressionSubResults, y_sum),
+        offsetof(RegressionSubResults, x_squared_sum),
+        offsetof(RegressionSubResults, xy_sum)};
+    MPI_Datatype types_regression_sub_results[4] = {
+        MPI_LONG_LONG_INT, MPI_LONG_LONG_INT, MPI_LONG_LONG_INT,
+        MPI_LONG_LONG_INT};
+    MPI_Type_create_struct(4, block_lengths_regression_sub_results,
+                           displacements_regression_sub_results,
+                           types_regression_sub_results,
+                           &MPI_REGRESSION_SUB_RESULTS_TYPE);
+    MPI_Type_commit(&MPI_REGRESSION_SUB_RESULTS_TYPE);
+
+    MPI_Status status;
 
     if (my_rank != 0) {
         int master = 0;
         vector<dataset::Point> points;
         points.resize(bucket_size);
 
-        MPI_Status status;
         MPI_Recv(&points[0], bucket_size, MPI_POINT_TYPE, master, tag,
                  MPI_COMM_WORLD, &status);
 
-        cout << "Worker " << my_rank << " - " << points.size() << endl;
+        RegressionSubResults sub_results = execute_lr(points);
+        MPI_Send(&sub_results, 1, MPI_REGRESSION_SUB_RESULTS_TYPE, master, tag,
+                 MPI_COMM_WORLD);
     } else {
         vector<vector<dataset::Point>> buckets_points =
             load_dataset(bucket_size, num_processes - 1);
@@ -96,14 +116,37 @@ int main(int argc, char **argv) {
             MPI_Send(&bucket_points[0], bucket_size, MPI_POINT_TYPE, i + 1, tag,
                      MPI_COMM_WORLD);
         }
-        /* for (int i = 1; i < num_processes; i++) { */
-        /*     int result; */
-        /*     MPI_Recv(&result, 1, MPI_INT, i, tag, MPI_COMM_WORLD, &status);
-         */
-        /* } */
+
+        RegressionSubResults results = {
+            .x_sum = 0,
+            .y_sum = 0,
+            .x_squared_sum = 0,
+            .xy_sum = 0,
+        };
+        for (int i = 0; i < buckets_points.size(); i++) {
+            RegressionSubResults sub_results;
+            MPI_Recv(&sub_results, 1, MPI_REGRESSION_SUB_RESULTS_TYPE, i + 1,
+                     tag, MPI_COMM_WORLD, &status);
+
+            results.x_sum += sub_results.x_sum;
+            results.y_sum += sub_results.y_sum;
+            results.x_squared_sum += sub_results.x_squared_sum;
+            results.xy_sum += sub_results.xy_sum;
+        }
         double end = MPI_Wtime();
         double total_time = end - begin;
-        cout << "Time linear regression (ms): " << total_time << endl;
+
+        unsigned long long int n = bucket_size * (num_processes - 1);
+
+        double slope =
+            ((double)(n * results.xy_sum - results.x_sum * results.y_sum)) /
+            ((double)(n * results.x_squared_sum -
+                      results.x_sum * results.x_sum));
+        double intercept =
+            ((double)(results.y_sum - slope * results.x_sum)) / n;
+        cout << "Time linear regression (s): " << total_time << endl;
+        cout << "Slope: " << slope << endl;
+        cout << "Intercept: " << intercept << endl;
     }
     MPI_Finalize();
 

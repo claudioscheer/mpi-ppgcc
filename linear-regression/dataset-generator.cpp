@@ -9,8 +9,8 @@ struct Point {
     int y;
 };
 
-const int MOD_VALUE_X = 11;
-const int MOD_VALUE_Y = 2;
+const int MOD_VALUE_X = 99;
+const int MOD_VALUE_Y = 33;
 
 vector<Point> get_dataset(unsigned long long int size) {
     vector<Point> points;
