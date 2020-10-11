@@ -6,13 +6,13 @@ sequential-build:
 	$(CC) lr-seq.cpp -o lr-seq.o $(CFLAGS)
 
 sequential: sequential-build
-	./lr-seq.o $(bucket-size) $(number-buckets)
+	./lr-seq.o $(number-points)
 
 mpi-build:
 	$(MPI_CC) lr-mpi.cpp -o lr-mpi.o $(CFLAGS)
 
 mpi: mpi-build
-	mpirun -np 16 --oversubscribe ./lr-mpi.o $(bucket-size)
+	mpirun -np 8 --oversubscribe ./lr-mpi.o $(number-points) $(granularity)
 
 .PHONY : clean
 clean:

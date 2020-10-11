@@ -10,6 +10,7 @@
 
 using namespace std;
 
+// Store the results from each worker.
 struct RegressionSubResults {
     unsigned long long int x_sum;
     unsigned long long int y_sum;
@@ -17,20 +18,16 @@ struct RegressionSubResults {
     unsigned long long int xy_sum;
 };
 
-vector<vector<dataset::Point>> load_dataset(unsigned long long int bucket_size,
-                                            unsigned int number_buckets) {
+vector<dataset::Point> load_dataset(unsigned long long int number_points) {
     double begin = MPI_Wtime();
-
-    vector<vector<dataset::Point>> buckets_points;
-    for (unsigned int i = 0; i < number_buckets; i++) {
-        buckets_points.push_back(dataset::get_dataset(bucket_size));
-    }
+    vector<dataset::Point> points = dataset::get_dataset(number_points);
     double end = MPI_Wtime();
     double total_time = end - begin;
     cout << "Time load dataset (s): " << total_time << endl;
-    return buckets_points;
+    return points;
 }
 
+// Perform linear regression on the subvector.
 RegressionSubResults execute_lr(vector<dataset::Point> points) {
     unsigned long long int x_sum = 0;
     unsigned long long int y_sum = 0;
@@ -58,15 +55,30 @@ RegressionSubResults execute_lr(vector<dataset::Point> points) {
 }
 
 int main(int argc, char **argv) {
+    unsigned long long int number_points = atoll(argv[1]);
+    unsigned long long int granularity = atoll(argv[2]);
+
+    int vector_tag = 1;
+    int kill_tag = 2;
+    int request_vector_tag = 3;
+
+    int number_grains = number_points / granularity;
+    MPI_Status status;
     int my_rank;
     int num_processes;
-    int tag = 1;
-    unsigned long long int bucket_size = atoll(argv[1]);
 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
 
+    if ((number_points % granularity) > 0) {
+        // This avoids the need to deal with the last elements of the array.
+        cout << "Error: granularity must be a multiple of the number of points."
+             << endl;
+        MPI::COMM_WORLD.Abort(-1);
+    }
+
+    // Commit Point struct to MPI.
     MPI_Datatype MPI_POINT_TYPE;
     int block_lengths_point[2] = {1, 1};
     MPI_Aint displacements_point[2] = {offsetof(dataset::Point, x),
@@ -76,6 +88,7 @@ int main(int argc, char **argv) {
                            types_point, &MPI_POINT_TYPE);
     MPI_Type_commit(&MPI_POINT_TYPE);
 
+    // Commit RegressionSubResults struct to MPI.
     MPI_Datatype MPI_REGRESSION_SUB_RESULTS_TYPE;
     int block_lengths_regression_sub_results[4] = {1, 1, 1, 1};
     MPI_Aint displacements_regression_sub_results[4] = {
@@ -92,29 +105,62 @@ int main(int argc, char **argv) {
                            &MPI_REGRESSION_SUB_RESULTS_TYPE);
     MPI_Type_commit(&MPI_REGRESSION_SUB_RESULTS_TYPE);
 
-    MPI_Status status;
-
     if (my_rank != 0) {
         int master = 0;
-        vector<dataset::Point> points;
-        points.resize(bucket_size);
+        int ask_for_message = 1;
+        int kill_flag = 0;
+        while (!kill_flag) {
+            if (ask_for_message) {
+                // Will only send a new request when the last request was
+                // already processed.
+                MPI_Send(&ask_for_message, 1, MPI_INT, master,
+                         request_vector_tag, MPI_COMM_WORLD);
+                ask_for_message = 0;
+            }
+            // Test whether the master submitted a new job.
+            int has_message = 0;
+            MPI_Iprobe(master, vector_tag, MPI_COMM_WORLD, &has_message,
+                       &status);
+            if (has_message) {
+                vector<dataset::Point> points;
+                points.resize(granularity);
+                MPI_Recv(&points[0], granularity, MPI_POINT_TYPE, master,
+                         vector_tag, MPI_COMM_WORLD, &status);
 
-        MPI_Recv(&points[0], bucket_size, MPI_POINT_TYPE, master, tag,
-                 MPI_COMM_WORLD, &status);
+                RegressionSubResults sub_results = execute_lr(points);
+                MPI_Send(&sub_results, 1, MPI_REGRESSION_SUB_RESULTS_TYPE,
+                         master, vector_tag, MPI_COMM_WORLD);
 
-        RegressionSubResults sub_results = execute_lr(points);
-        MPI_Send(&sub_results, 1, MPI_REGRESSION_SUB_RESULTS_TYPE, master, tag,
-                 MPI_COMM_WORLD);
+                ask_for_message = 1;
+            }
+            // Check for a 'suicide' request.
+            MPI_Iprobe(master, kill_tag, MPI_COMM_WORLD, &kill_flag, &status);
+        }
     } else {
-        vector<vector<dataset::Point>> buckets_points =
-            load_dataset(bucket_size, num_processes - 1);
+        vector<dataset::Point> points = load_dataset(number_points);
 
         double begin = MPI_Wtime();
-        for (int i = 0; i < buckets_points.size(); i++) {
-            vector<dataset::Point> bucket_points = buckets_points.at(i);
 
-            MPI_Send(&bucket_points[0], bucket_size, MPI_POINT_TYPE, i + 1, tag,
-                     MPI_COMM_WORLD);
+        // Store async requests received from workers.
+        vector<MPI_Request> receive_requests(number_grains);
+        vector<RegressionSubResults> regression_sub_results(number_grains);
+
+        int grain = 0;
+        while (number_points > (grain * granularity)) {
+            // Test if a worker is asking for a job.
+            int has_worker_request = 0;
+            MPI_Iprobe(MPI_ANY_SOURCE, request_vector_tag, MPI_COMM_WORLD,
+                       &has_worker_request, &status);
+            if (has_worker_request) {
+                // Send the next elements from the dataset to the worker.
+                MPI_Send(&points[(grain * granularity)], granularity,
+                         MPI_POINT_TYPE, status.MPI_SOURCE, vector_tag,
+                         MPI_COMM_WORLD);
+                MPI_Irecv(&regression_sub_results[grain], 1,
+                          MPI_REGRESSION_SUB_RESULTS_TYPE, status.MPI_SOURCE,
+                          vector_tag, MPI_COMM_WORLD, &receive_requests[grain]);
+                grain++;
+            }
         }
 
         RegressionSubResults results = {
@@ -123,27 +169,31 @@ int main(int argc, char **argv) {
             .x_squared_sum = 0,
             .xy_sum = 0,
         };
-        for (int i = 0; i < buckets_points.size(); i++) {
-            RegressionSubResults sub_results;
-            MPI_Recv(&sub_results, 1, MPI_REGRESSION_SUB_RESULTS_TYPE, i + 1,
-                     tag, MPI_COMM_WORLD, &status);
-
+        // Collect the results of all workers.
+        for (int i = 0; i < number_grains; i++) {
+            MPI_Wait(&receive_requests.at(i), &status);
+            RegressionSubResults sub_results = regression_sub_results.at(i);
             results.x_sum += sub_results.x_sum;
             results.y_sum += sub_results.y_sum;
             results.x_squared_sum += sub_results.x_squared_sum;
             results.xy_sum += sub_results.xy_sum;
         }
+
+        // Kill all workers.
+        int kill_value = 1;
+        for (int i = 1; i < num_processes; i++) {
+            MPI_Send(&kill_value, 1, MPI_INT, i, kill_tag, MPI_COMM_WORLD);
+        }
+
         double end = MPI_Wtime();
         double total_time = end - begin;
 
-        unsigned long long int n = bucket_size * (num_processes - 1);
-
-        double slope =
-            ((double)(n * results.xy_sum - results.x_sum * results.y_sum)) /
-            ((double)(n * results.x_squared_sum -
-                      results.x_sum * results.x_sum));
+        double slope = ((double)(number_points * results.xy_sum -
+                                 results.x_sum * results.y_sum)) /
+                       ((double)(number_points * results.x_squared_sum -
+                                 results.x_sum * results.x_sum));
         double intercept =
-            ((double)(results.y_sum - slope * results.x_sum)) / n;
+            ((double)(results.y_sum - slope * results.x_sum)) / number_points;
         cout << "Time linear regression (s): " << total_time << endl;
         cout << "Slope: " << slope << endl;
         cout << "Intercept: " << intercept << endl;

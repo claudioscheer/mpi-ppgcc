@@ -9,16 +9,9 @@
 
 using namespace std;
 
-vector<dataset::Point> load_dataset(unsigned long long int bucket_size,
-                                    unsigned int number_buckets) {
+vector<dataset::Point> load_dataset(unsigned long long int number_points) {
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-
-    vector<dataset::Point> points;
-    for (unsigned int i = 0; i < number_buckets; i++) {
-        vector<dataset::Point> p = dataset::get_dataset(bucket_size);
-        points.insert(points.end(), p.begin(), p.end());
-    }
-
+    vector<dataset::Point> points = dataset::get_dataset(number_points);
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
     double total_time = chrono::duration<double>(end - begin).count();
     cout << "Time load dataset (s): " << total_time << endl;
@@ -56,9 +49,8 @@ tuple<double, double, double> execute_lr(vector<dataset::Point> points) {
 }
 
 int main(int argc, char **argv) {
-    unsigned long long int bucket_size = atoll(argv[1]);
-    unsigned int number_buckets = atoi(argv[2]);
-    vector<dataset::Point> points = load_dataset(bucket_size, number_buckets);
+    unsigned long long int number_points = atoll(argv[1]);
+    vector<dataset::Point> points = load_dataset(number_points);
     tuple<double, double, double> results = execute_lr(points);
 
     double total_time = get<0>(results);
