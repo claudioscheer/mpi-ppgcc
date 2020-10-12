@@ -1,0 +1,161 @@
+#!/bin/bash
+
+################-> are comments
+################-> "#PBS" are Batch Script commands
+
+#PBS -m abe
+
+################ Verbose mode
+
+#PBS -V
+
+################
+
+################ Change these parameters according to your requisites
+
+########PBS -l nodes=1:ppn=16:cluster-Atlantica,walltime=05:00:00
+#PBS -l nodes=1:ppn=24:cluster-Cerrado,walltime=999:00:00
+
+################ Where:
+################ nodes = number of nodes requested
+################ ppn = number of cores per node
+################ cluster-Atlantica / cluster-Gates = cluster name
+################ walltime = max allocation time
+
+################ Please, change this e-mail address to yours
+
+####PBS -M user.name@acad.pucrs.br
+#PBS -M gabriell.araujo@acad.pucrs.br
+
+################
+
+#PBS -r n
+
+################ Output options
+
+#PBS -j oe
+
+################
+
+################ Please, change this directory to your working dir.
+
+####PBS -d /home/user.name/exemplos/torque
+#PBS -d /home/gabriell.araujo/
+
+################qsub -I -V -d /home/gabriell.araujo/job -l nodes=1:cluster-Cerrado:ppn=24,walltime=00:15:00
+
+################
+echo Running on host `hostname`
+echo
+echo Initial Time is `date`
+echo
+echo Directory is `pwd`
+echo
+echo This jobs runs on the following nodes:
+echo `cat $PBS_NODEFILE | uniq`
+echo
+echo JOB_ID:
+echo `echo $PBS_JOBID`
+echo ################
+
+############# Command example, if using MPI
+
+#mpirun -machinefile nodefile -np 16 program_mpi
+
+################
+
+############# If running a sequential or openMP program
+
+#./program
+
+####SCRIPT GMAP####
+#source /usr/local/GCC/gcc-5.3.0-vars.sh
+
+export FF_ROOT="/home/gabriell.araujo/LIBRARIES/fastflow"
+
+cd PHOENIX_ALGORITHMS
+cd tests
+cd linear_regression
+
+mkdir logs
+
+g++ -O3 gerador_data_set.cpp -o gerador_data_set
+
+g++ -O3 lr-seq.cpp -o main1 -I /home/gabriell.araujo/LIBRARIES/upl/include/upl -L /home/gabriell.araujo/LIBRARIES/upl/lib -lupl -lm
+
+g++ -O3 lr-omp.cpp -fopenmp -o main2 -I /home/gabriell.araujo/LIBRARIES/upl/include/upl -L /home/gabriell.araujo/LIBRARIES/upl/lib -lupl -lm
+
+g++ -O3 -std=c++11 -I$FF_ROOT lr-ff.cpp -o main3 -pthread -I /home/gabriell.araujo/LIBRARIES/upl/include/upl -L /home/gabriell.araujo/LIBRARIES/upl/lib -lupl -lm
+
+g++ -O3 lr-pthread.cpp -lpthread -o main4 -I /home/gabriell.araujo/LIBRARIES/upl/include/upl -L /home/gabriell.araujo/LIBRARIES/upl/lib -lupl -lm
+
+make clean
+make
+
+####gerador de dados
+####data1:   9.000.000 (50,4 mb)
+####data2:  90.000.000 (504,0 mb)
+####data3: 900.000.000 (5,0 gb)
+./gerador_data_set 9000000 90000000 900000000 50
+
+####sequencial
+for data_set in 1 2 3
+do
+	for execucoes in 1 2 3 4 5 6 7 8 9 10
+	do
+		sudo ./main1 $data_set >> logs/seq-log-data-$data_set.txt		
+	done
+done
+
+####openmp
+for data_set in 1 2 3
+do
+	for numero_threads in 1 2 3 4 5 6 7 8 9 10 11 12
+	do
+		for execucoes in 1 2 3 4 5 6 7 8 9 10
+		do
+			sudo ./main2 $data_set $numero_threads >> logs/openmp-log-data-$data_set-threads-$numero_threads.txt
+		done
+	done
+done
+
+####fastflow
+for data_set in 1 2 3
+do
+	for numero_threads in 1 2 3 4 5 6 7 8 9 10 11 12
+	do
+		for execucoes in 1 2 3 4 5 6 7 8 9 10
+		do
+			sudo ./main3 $data_set $numero_threads >> logs/fastflow-log-data-$data_set-threads-$numero_threads.txt
+		done
+	done
+done
+
+####pthread
+for data_set in 1 2 3
+do
+	for numero_threads in 1 2 3 4 5 6 7 8 9 10 11 12
+	do
+		for execucoes in 1 2 3 4 5 6 7 8 9 10
+		do
+			sudo ./main4 $data_set $numero_threads >> logs/pthread-log-data-$data_set-threads-$numero_threads.txt
+		done
+	done
+done
+
+####phoenix
+for data_set in 1 2 3
+do
+	for numero_threads in 1 2 3 4 5 6 7 8 9 10 11 12
+	do
+		for execucoes in 1 2 3 4 5 6 7 8 9 10
+		do
+			sudo ./linear_regression $data_set $numero_threads >> logs/phoenix-log-data-$data_set-threads-$numero_threads.txt
+		done
+	done
+done
+
+###############
+
+echo Final Time is `date`
+
