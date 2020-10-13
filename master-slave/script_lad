@@ -1,0 +1,63 @@
+#!/bin/bash
+
+#PBS -m abe
+
+# Verbose mode.
+#PBS -V
+
+# Email for notification.
+#PBS -M claudio.scheer@edu.pucrs.br
+
+# Machine parameters:
+# - nodes: number or name of nodes requested;
+# - ppn: number of cores per node;
+# - cluster-Atlantica / cluster-Cerrado / cluster-Amazonia: cluster name;
+# - walltime: maximum allocation time;
+#PBS -l nodes=1:ppn=40:cluster-Amazonia,walltime=24:00:00
+
+# Output directory.
+#PBS -d /home/claudio.scheer/Projects/mpi-ppgcc/master-slave
+
+#PBS -r n
+#PBS -j oe
+
+echo Running on host `hostname`
+echo
+echo Initial Time: `date`
+echo
+echo Directory is `pwd`
+echo
+echo This jobs runs on the following nodes:
+echo `cat $PBS_NODEFILE | uniq`
+echo
+echo JOB_ID:
+echo `echo $PBS_JOBID`
+echo --------------------------------------
+
+# Export GCC 9.3.0.
+source ~/opt/gcc-9.3.0/activate
+
+mkdir -p logs/bubble-sort
+mkdir -p logs/linear-regression
+
+# Bubble sort.
+n=5
+number_vectors=50
+vector_size=50
+
+cd bubble-sort
+for ((i = 0; i < $n; i++)); do
+    make sequential number-vectors=$number_vectors vector-size=$vector_size >> ../logs/bubble-sort/sequential-$i.txt
+done
+
+for ((i = 0; i < $n; i++)); do
+    processes=($(seq 2 1 20) 40)
+    for np in "${processes[@]}"; do
+        make mpi number-vectors=$number_vectors vector-size=$vector_size np=$np >> ../logs/bubble-sort/mpi-$i.txt
+    done
+done
+cd -
+
+
+echo --------------------------------------
+echo Final Time: `date`

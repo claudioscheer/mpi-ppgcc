@@ -53,6 +53,8 @@ int main(int argc, char **argv) {
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
     double total_time = chrono::duration<double>(end - begin).count();
 
+    cout << "Number vectors: " << number_vectors << endl;
+    cout << "Vector size: " << vector_size << endl;
     cout << "Time sort (s): " << total_time << endl;
     return 0;
 }
