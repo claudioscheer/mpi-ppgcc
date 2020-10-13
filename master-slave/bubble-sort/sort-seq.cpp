@@ -14,7 +14,8 @@ vector<vector<int>> load_dataset(int number_vectors, int vector_size) {
     vector<vector<int>> vectors =
         dataset::get_dataset(number_vectors, vector_size);
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
-    double total_time = chrono::duration<double>(end - begin).count();
+    double total_time =
+        chrono::duration_cast<chrono::duration<double>>(end - begin).count();
     cout << "Time load dataset (s): " << total_time << endl;
     return vectors;
 }
@@ -51,7 +52,8 @@ int main(int argc, char **argv) {
         vector<int> v_sorted = bubble_sort(v);
     }
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
-    double total_time = chrono::duration<double>(end - begin).count();
+    double total_time =
+        chrono::duration_cast<chrono::duration<double>>(end - begin).count();
 
     cout << "Number vectors: " << number_vectors << endl;
     cout << "Vector size: " << vector_size << endl;
