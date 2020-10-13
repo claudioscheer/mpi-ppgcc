@@ -12,7 +12,7 @@ mpi-build:
 	$(MPI_CC) sort-mpi.cpp -o sort-mpi.o $(CFLAGS)
 
 mpi: mpi-build
-	mpirun -np 8 --oversubscribe ./sort-mpi.o $(number-points)
+	mpirun -np 16 --oversubscribe ./sort-mpi.o $(number-vectors) $(vector-size)
 
 .PHONY : clean
 clean:

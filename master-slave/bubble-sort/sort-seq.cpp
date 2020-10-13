@@ -19,7 +19,7 @@ vector<vector<int>> load_dataset(int number_vectors, int vector_size) {
     return vectors;
 }
 
-vector<int> sort(vector<int> v) {
+vector<int> bubble_sort(vector<int> v) {
     int n = v.size();
     int c = 0;
     int temp;
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
     for (int i = 0; i < vectors.size(); i++) {
         vector<int> v = vectors.at(i);
-        vector<int> v_sorted = sort(v);
+        vector<int> v_sorted = bubble_sort(v);
     }
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
     double total_time = chrono::duration<double>(end - begin).count();

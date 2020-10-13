@@ -146,21 +146,18 @@ int main(int argc, char **argv) {
         vector<RegressionSubResults> regression_sub_results(number_grains);
 
         int grain = 0;
+        int worker_request = 0;
         while (number_points > (grain * granularity)) {
-            // Test if a worker is asking for a job.
-            int has_worker_request = 0;
-            MPI_Iprobe(MPI_ANY_SOURCE, request_vector_tag, MPI_COMM_WORLD,
-                       &has_worker_request, &status);
-            if (has_worker_request) {
-                // Send the next elements from the dataset to the worker.
-                MPI_Send(&points[(grain * granularity)], granularity,
-                         MPI_POINT_TYPE, status.MPI_SOURCE, vector_tag,
-                         MPI_COMM_WORLD);
-                MPI_Irecv(&regression_sub_results[grain], 1,
-                          MPI_REGRESSION_SUB_RESULTS_TYPE, status.MPI_SOURCE,
-                          vector_tag, MPI_COMM_WORLD, &receive_requests[grain]);
-                grain++;
-            }
+            MPI_Recv(&worker_request, 1, MPI_INT, MPI_ANY_SOURCE,
+                     request_vector_tag, MPI_COMM_WORLD, &status);
+            // Send the next elements from the dataset to the worker.
+            MPI_Send(&points[(grain * granularity)], granularity,
+                     MPI_POINT_TYPE, status.MPI_SOURCE, vector_tag,
+                     MPI_COMM_WORLD);
+            MPI_Irecv(&regression_sub_results[grain], 1,
+                      MPI_REGRESSION_SUB_RESULTS_TYPE, status.MPI_SOURCE,
+                      vector_tag, MPI_COMM_WORLD, &receive_requests[grain]);
+            grain++;
         }
 
         RegressionSubResults results = {
