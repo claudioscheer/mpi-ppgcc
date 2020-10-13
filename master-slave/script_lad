@@ -42,18 +42,18 @@ mkdir -p logs/linear-regression
 
 # Bubble sort.
 n=5
-number_vectors=50
-vector_size=50
+number_vectors=1000
+vector_size=50000
 
 cd bubble-sort
-for ((i = 0; i < $n; i++)); do
-    make sequential number-vectors=$number_vectors vector-size=$vector_size >> ../logs/bubble-sort/sequential-$i.txt
+for ((i = 1; i <= $n; i++)); do
+    make sequential number-vectors=$number_vectors vector-size=$vector_size >> ../logs/bubble-sort/sequential-$i.txt 2>&1
 done
 
-for ((i = 0; i < $n; i++)); do
+for ((i = 1; i <= $n; i++)); do
     processes=($(seq 2 1 20) 40)
     for np in "${processes[@]}"; do
-        make mpi number-vectors=$number_vectors vector-size=$vector_size np=$np >> ../logs/bubble-sort/mpi-$i.txt
+        make mpi number-vectors=$number_vectors vector-size=$vector_size np=$np >> ../logs/bubble-sort/mpi-$i.txt 2>&1
     done
 done
 cd -

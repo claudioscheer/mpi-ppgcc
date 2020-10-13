@@ -126,6 +126,7 @@ int main(int argc, char **argv) {
         double end = MPI_Wtime();
         double total_time = end - begin;
 
+        cout << "Number processes: " << num_processes << endl;
         cout << "Number vectors: " << number_vectors << endl;
         cout << "Vector size: " << vector_size << endl;
         cout << "Time sort (s): " << total_time << endl;
