@@ -1,0 +1,67 @@
+\documentclass[10pt, twocolumn]{report}
+
+\usepackage[toc,page]{appendix}
+\usepackage{authblk}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{listings}
+
+\lstdefinestyle{cppStyle}{
+	captionpos=b,
+	numbers=left,
+	% xleftmargin=8pt,
+	numberstyle=\tiny,
+	numbersep=8pt,
+	language=c++,
+	stringstyle=\ttfamily\tiny,
+	basicstyle=\ttfamily\tiny,
+	showstringspaces=false,
+	breaklines,
+	escapechar=|,
+	columns=fullflexible,
+}
+
+\begin{document}
+
+\title{Bubble Sort and Linear Regression with MPI}
+
+\author[1]{Claudio Scheer}
+\author[1]{Gabriell Araujo}
+\affil[1]{Master's Degree in Computer Science - PUCRS}
+\affil[ ]{\textit{\{claudio.scheer, grabriell.araujo\}@edu.pucrs.br}}
+
+\maketitle
+
+\noindent asdfas w
+Include a title and one or two paragraphs describing what you plan to do. Tell what interviews, site visits, or other activity you plan. Be specific if you can. Include  one good reference you plan to used. This is an example of how to include a citation.
+
+\section{Introduction}
+Include a title and one or two paragraphs describing what you plan to do. Tell what interviews, site visits, or other activity you plan. Be specific if you can. Include  one good reference you plan to used. This is an example of how to include a citation.
+
+\section {Background}
+Give a background on your topic. Include references.
+
+\section{Results}
+Results of your interviews or observations. Use information and/or quotes from your interview or observations.
+
+\section{Discussion}
+Your comments or evaluation of interview or observations
+
+\section{Summary}
+Summarize your paper.
+
+\begin{appendices}
+	\chapter{Bubble Sort Source Code}
+	\lstinputlisting[caption=Dataset generator,style=cppStyle]{../bubble-sort/dataset-generator.cpp}
+	\lstinputlisting[caption=Bubble Sort Sequential,style=cppStyle]{../bubble-sort/sort-seq.cpp}
+	\lstinputlisting[caption=Bubble Sort MPI,style=cppStyle]{../bubble-sort/sort-mpi.cpp}
+
+	\chapter{Linear Regression Source Code}
+	\lstinputlisting[caption=Dataset generator,style=cppStyle]{../bubble-sort/dataset-generator.cpp}
+	\lstinputlisting[caption=Linear Regression Sequential,style=cppStyle]{../linear-regression/lr-seq.cpp}
+	\lstinputlisting[caption=Linear Regression MPI,style=cppStyle]{../linear-regression/lr-mpi.cpp}
+\end{appendices}
+
+\end{document}

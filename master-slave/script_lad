@@ -36,7 +36,6 @@ echo --------------------------------------
 
 # Export GCC 9.3.0.
 source ~/opt/gcc-9.3.0/activate
-source ~/opt/mpic++-9.3.0/activate
 
 mkdir -p logs/bubble-sort
 mkdir -p logs/linear-regression
@@ -44,7 +43,7 @@ mkdir -p logs/linear-regression
 # Bubble sort.
 n=3
 number_vectors=1000
-vector_size=50000
+vector_size=25000
 
 cd bubble-sort
 for ((i = 1; i <= $n; i++)); do
@@ -58,7 +57,6 @@ for ((i = 1; i <= $n; i++)); do
     done
 done
 cd -
-
 
 echo --------------------------------------
 echo Final Time: `date`
