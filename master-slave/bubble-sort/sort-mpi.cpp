@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
                          MPI_COMM_WORLD, &status);
 
                 vector<int> v_sorted = bubble_sort(v);
-                MPI_Send(&v_sorted, vector_size, MPI_INT, master, vector_tag,
+                MPI_Send(&v_sorted[0], vector_size, MPI_INT, master, vector_tag,
                          MPI_COMM_WORLD);
 
                 ask_for_message = 1;
@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
             MPI_Recv(&worker_request, 1, MPI_INT, MPI_ANY_SOURCE,
                      request_vector_tag, MPI_COMM_WORLD, &status);
             // Send the vector to the worker.
-            MPI_Send(&v, vector_size, MPI_INT, status.MPI_SOURCE, vector_tag,
+            MPI_Send(&v[0], vector_size, MPI_INT, status.MPI_SOURCE, vector_tag,
                      MPI_COMM_WORLD);
 
             ordered_vectors[i].resize(vector_size);

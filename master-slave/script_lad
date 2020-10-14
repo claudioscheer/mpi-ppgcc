@@ -43,7 +43,7 @@ mkdir -p logs/linear-regression
 # Bubble sort.
 n=3
 number_vectors=1000
-vector_size=25000
+vector_size=5000
 
 cd bubble-sort
 for ((i = 1; i <= $n; i++)); do
