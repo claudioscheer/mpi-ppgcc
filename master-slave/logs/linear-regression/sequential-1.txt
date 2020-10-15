@@ -1,0 +1,6 @@
+g++ lr-seq.cpp -o lr-seq.o -std=c++17
+./lr-seq.o 100000000
+Time load dataset (s): 4.93933
+Time linear regression (s): 4.48646
+Slope: 0.11102
+Intercept: 10.56
