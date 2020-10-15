@@ -3,7 +3,7 @@ reset
 set terminal pdf enhanced
 set output "bubble-sort-speedup-efficiency.pdf"
 
-set title "Bubble Sort: Speedup x Efficiency" offset 0,-.5
+# set title "Bubble Sort: Speedup x Efficiency" offset 0,-.5
 set xlabel "Number Workers"
 set ylabel "Speedup"
 set y2label "Efficiency"

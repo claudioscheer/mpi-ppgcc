@@ -3,7 +3,7 @@ reset
 set terminal pdf enhanced
 set output "linear-regression-time.pdf"
 
-set title "Linear Regression: Execution Time x Efficiency" offset 0,-.5
+# set title "Linear Regression: Execution Time x Efficiency" offset 0,-.5
 set xlabel "Number Workers"
 set ylabel "Execution Time (s)"
 set y2label "Efficiency"

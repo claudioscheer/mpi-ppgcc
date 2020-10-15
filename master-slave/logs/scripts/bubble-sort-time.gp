@@ -3,7 +3,7 @@ reset
 set terminal pdf enhanced
 set output "bubble-sort-time.pdf"
 
-set title "Bubble Sort: Execution Time x Efficiency" offset 0,-.5
+# set title "Bubble Sort: Execution Time x Efficiency" offset 0,-.5
 set xlabel "Number Workers"
 set ylabel "Execution Time (s)"
 set y2label "Efficiency"

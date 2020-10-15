@@ -3,7 +3,7 @@ reset
 set terminal pdf enhanced
 set output "linear-regression-speedup-efficiency.pdf"
 
-set title "Linear Regression: Speedup x Efficiency" offset 0,-.5
+# set title "Linear Regression: Speedup x Efficiency" offset 0,-.5
 set xlabel "Number Workers"
 set ylabel "Speedup"
 set y2label "Efficiency"

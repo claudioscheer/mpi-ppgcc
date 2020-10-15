@@ -74,3 +74,10 @@ for np in "${processes[@]}"; do
     echo $row >> $bubble_sort_dat_path
 done
 ## BUBBLE SORT ##
+
+## CREATE PLOTS ##
+gnuplot bubble-sort-time.gp
+gnuplot linear-regression-time.gp
+gnuplot bubble-sort-speedup-efficiency.gp
+gnuplot linear-regression-speedup-efficiency.gp
+## CREATE PLOTS ##

@@ -84,6 +84,18 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmti10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
+INPUT ../logs/scripts/bubble-sort-time.pdf
+INPUT ../logs/scripts/bubble-sort-time.pdf
+INPUT ../logs/scripts/bubble-sort-time.pdf
+INPUT ../logs/scripts/bubble-sort-speedup-efficiency.pdf
+INPUT ../logs/scripts/bubble-sort-speedup-efficiency.pdf
+INPUT ../logs/scripts/bubble-sort-speedup-efficiency.pdf
+INPUT ../logs/scripts/linear-regression-time.pdf
+INPUT ../logs/scripts/linear-regression-time.pdf
+INPUT ../logs/scripts/linear-regression-time.pdf
+INPUT ../logs/scripts/linear-regression-speedup-efficiency.pdf
+INPUT ../logs/scripts/linear-regression-speedup-efficiency.pdf
+INPUT ../logs/scripts/linear-regression-speedup-efficiency.pdf
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr17.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr17.tfm
@@ -120,6 +132,8 @@ INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb
