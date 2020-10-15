@@ -9,7 +9,7 @@ set ylabel "Execution Time (s)"
 set y2label "Efficiency"
 
 set key box
-set key outside top center vertical maxrows 2 maxcols 6
+set key outside top center vertical maxrows 1 maxcols 6
 set key autotitle columnheader
 set key samplen 3 spacing 1 font ",9"
 
@@ -22,4 +22,4 @@ set auto x
 
 plot "bubble-sort.dat" using 2:3:xticlabels(1) title col linewidth 2 linecolor "#ff0000" fillstyle pattern 1, \
          "bubble-sort.dat" using 4:5:xticlabels(1) title col linewidth 2 linecolor "#8b0000" fillstyle pattern 6, \
-         "bubble-sort.dat" using 0:7 title col with linespoints axes x1y2 linewidth 1 linecolor "#e69f00" pointtype 5 pointsize .3
+         "bubble-sort.dat" using 0:7:xticlabels(1) title col with linespoints axes x1y2 linewidth 1 linecolor "#e69f00" pointtype 5 pointsize .3

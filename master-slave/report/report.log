@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.10.12)  15 OCT 2020 16:07
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.10.12)  15 OCT 2020 20:25
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -204,40 +204,28 @@ Package pdftex.def Info: ../logs/scripts/bubble-sort-time.pdf  used on input lin
 <../logs/scripts/bubble-sort-speedup-efficiency.pdf, id=12, 361.35pt x 216.81pt>
 File: ../logs/scripts/bubble-sort-speedup-efficiency.pdf Graphic file (type pdf)
 <use ../logs/scripts/bubble-sort-speedup-efficiency.pdf>
-Package pdftex.def Info: ../logs/scripts/bubble-sort-speedup-efficiency.pdf  used on input line 59.
+Package pdftex.def Info: ../logs/scripts/bubble-sort-speedup-efficiency.pdf  used on input line 61.
 (pdftex.def)             Requested size: 211.04857pt x 126.62987pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-
-Underfull \vbox (badness 1596) has occurred while \output is active []
-
 <../logs/scripts/linear-regression-time.pdf, id=13, 361.35pt x 216.81pt>
 File: ../logs/scripts/linear-regression-time.pdf Graphic file (type pdf)
 <use ../logs/scripts/linear-regression-time.pdf>
-Package pdftex.def Info: ../logs/scripts/linear-regression-time.pdf  used on input line 69.
+Package pdftex.def Info: ../logs/scripts/linear-regression-time.pdf  used on input line 73.
 (pdftex.def)             Requested size: 211.04857pt x 126.62987pt.
-<../logs/scripts/linear-regression-speedup-efficiency.pdf, id=14, 361.35pt x 216.81pt>
-File: ../logs/scripts/linear-regression-speedup-efficiency.pdf Graphic file (type pdf)
-<use ../logs/scripts/linear-regression-speedup-efficiency.pdf>
-Package pdftex.def Info: ../logs/scripts/linear-regression-speedup-efficiency.pdf  used on input line 76.
-(pdftex.def)             Requested size: 211.04857pt x 126.62987pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[1
+ [1
 
  <../logs/scripts/bubble-sort-time.pdf> <../logs/scripts/bubble-sort-speedup-efficiency.pdf
 
 pdfTeX warning: pdflatex (file ../logs/scripts/bubble-sort-speedup-efficiency.pdf): PDF inclusion: multiple pdfs with page group included in a single page
-> <../logs/scripts/linear-regression-time.pdf
+>]
+<../logs/scripts/linear-regression-speedup-efficiency.pdf, id=88, 361.35pt x 216.81pt>
+File: ../logs/scripts/linear-regression-speedup-efficiency.pdf Graphic file (type pdf)
+<use ../logs/scripts/linear-regression-speedup-efficiency.pdf>
+Package pdftex.def Info: ../logs/scripts/linear-regression-speedup-efficiency.pdf  used on input line 82.
+(pdftex.def)             Requested size: 211.04857pt x 126.62987pt.
+ [2 <../logs/scripts/linear-regression-time.pdf> <../logs/scripts/linear-regression-speedup-efficiency.pdf
 
-pdfTeX warning: pdflatex (file ../logs/scripts/linear-regression-time.pdf): PDF inclusion: multiple pdfs with page group included in a single page
->] [2
-
- <../logs/scripts/linear-regression-speedup-efficiency.pdf>] [3
+pdfTeX warning: pdflatex (file ../logs/scripts/linear-regression-speedup-efficiency.pdf): PDF inclusion: multiple pdfs with page group included in a single page
+>] [3
 
 
 
@@ -258,15 +246,15 @@ Appendix B.
 
 ]) [7] (./report.aux) ) 
 Here is how much of TeX's memory you used:
- 4227 strings out of 481239
- 57719 string characters out of 5920376
+ 4229 strings out of 481239
+ 57768 string characters out of 5920376
  853838 words of memory out of 5000000
- 19445 multiletter control sequences out of 15000+600000
+ 19447 multiletter control sequences out of 15000+600000
  539347 words of font info for 49 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 39i,8n,69p,608b,1831s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 39i,8n,69p,659b,1833s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb>
-Output written on report.pdf (8 pages, 213307 bytes).
+Output written on report.pdf (8 pages, 216851 bytes).
 PDF statistics:
  335 PDF objects out of 1000 (max. 8388607)
  210 compressed objects within 3 object streams

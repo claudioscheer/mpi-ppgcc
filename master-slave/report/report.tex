@@ -45,47 +45,55 @@ Instead of using the LAD access provided by the professor, we ran our \textit{ba
 All experiments were executed three times and then the average execution time and the standard deviation were calculated. For the implementation using MPI, we used the master-slave architecture. In short, the slave asks the master for a job, the master sends the job to the slave, the slave processes the job and returns the result. The master waits for the slave's results using an asynchronous call. Finally, when all jobs are completed, the master waits for all the asynchronous results of the slaves and asks the slave to `commit suicide'\footnote{What a horrible scenario!}.
 
 \section{Bubble Sort}
-The bubble sort problem addressed here consists of sorting 1000 vectors with 2500 integers. Each slave receives a vector to sort and return the sorted vector to the master. Figure~\ref{fig:bubble-sort-time} shows the
+The bubble sort problem addressed here consists of sorting 1000 vectors with 2500 integers. Each slave receives a vector to sort and return the sorted vector to the master. Figure~\ref{fig:bubble-sort-time} shows the results of the executions using the sequential (Listing~\ref{lst:bubble-sort-sequential}) and the MPI version (Listing~\ref{lst:bubble-sort-mpi}), with different numbers of processes.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.45\textwidth]{../logs/scripts/bubble-sort-time.pdf}
 	\caption{Execution Time x Efficiency}
 	\label{fig:bubble-sort-time}
 \end{figure}
 
-\begin{figure}[h]
+As the number of processes increases, the execution time is shorter. However, the efficiency of the parallel execution grows slowly from 4 processes, due to the cost of sending the messages to each slave. Even so, the efficiency of the bubble sort with MPI reaches 90\%. This indicates that, as the number of processes increases, the bubble sort problem can exploit up to 90\% of the expected speedup.
+
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.45\textwidth]{../logs/scripts/bubble-sort-speedup-efficiency.pdf}
 	\caption{Speedup x Efficiency}
 	\label{fig:bubble-sort-speedup-efficiency}
 \end{figure}
 
-\section {Linear Regression}
-Linear regression is an algorithm used for predictive analysis. In summary, the algorithm finds a relationship between $x$ and $y$ and can predict a new $y$ using as input a $x$ not yet known by the model. To test the algorithm, we used 100000000 $x$ and $y$ points.
+Figure~\ref{fig:bubble-sort-speedup-efficiency} shows that the speedup grows linearly for physical cores. However, when using hyper-threading, the speedup is only 62.9\% effective when compared to the number of processes.
 
-\begin{figure}[h]
+\section {Linear Regression}
+Linear regression is an algorithm used for predictive analysis. In summary, the algorithm finds a relationship between $x$ and $y$ and can predict a new $y$ using as input a $x$ not yet known by the model. To test the algorithm, we used 100000000 $x$ and $y$ points, with granularity of 10000, 100000, 500000 and 1000000 points. Figure~\ref{fig:linear-regression-time} shows the results for different number of processes and granularities. In the configurations tested, lower granularity has a better performance. However, this may not be true for smaller granularities, as the number of messages sent will be higher.
+
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.45\textwidth]{../logs/scripts/linear-regression-time.pdf}
 	\caption{Execution Time x Efficiency}
 	\label{fig:linear-regression-time}
 \end{figure}
 
-\begin{figure}[h]
+For the MPI version with two processes, the execution time was worse than the sequential version. It showed that the cost of sending messages to each slave costs about 23\% of the time. Figure~\ref{fig:linear-regression-speedup-efficiency} shows that, after 8 processes, the speedup stabilizes and efficiency drops. This fact shows that, regardless of the size of the input, the linear regression algorithm using master-slave architecture, has a point where speedup and efficiency stop growing.
+
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.45\textwidth]{../logs/scripts/linear-regression-speedup-efficiency.pdf}
 	\caption{Speedup x Efficiency}
 	\label{fig:linear-regression-speedup-efficiency}
 \end{figure}
 
-\section{Results}
-Results of your interviews or observations. Use information and/or quotes from your interview or observations.
+\section{Discussion}
+In linear regression, hyper-threading increased the execution time when compared to the approach using all physical cores and the efficiency was only 15\%. For bubble sort, hyper-threading has a speedup, but not so efficient as using only the physical cores. Therefore, the characteristics of the problem influence the choice of whether or not to use hyper-threading.
+
+The main difference between the two problems is the speedup as the number of processes increases. Bubble sort will have a linear growth, while linear regression has a point where, even with more physical cores, the speedup stabilizes.
 
 \begin{appendices}
 	\chapter{Bubble Sort Source Code}
 	\lstinputlisting[caption=Dataset generator,style=cppStyle]{../bubble-sort/dataset-generator.cpp}
-	\lstinputlisting[caption=Bubble Sort Sequential,style=cppStyle]{../bubble-sort/sort-seq.cpp}
-	\lstinputlisting[caption=Bubble Sort MPI,style=cppStyle]{../bubble-sort/sort-mpi.cpp}
+	\lstinputlisting[caption=Bubble Sort Sequential,label=lst:bubble-sort-sequential,style=cppStyle]{../bubble-sort/sort-seq.cpp}
+	\lstinputlisting[caption=Bubble Sort MPI,label=lst:bubble-sort-mpi,style=cppStyle]{../bubble-sort/sort-mpi.cpp}
 
 	\chapter{Linear Regression Source Code}
 	\lstinputlisting[caption=Dataset generator,style=cppStyle]{../bubble-sort/dataset-generator.cpp}

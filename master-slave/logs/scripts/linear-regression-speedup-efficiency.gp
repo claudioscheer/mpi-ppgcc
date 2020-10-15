@@ -9,6 +9,7 @@ set ylabel "Speedup"
 set y2label "Efficiency"
 
 set key box
+set key outside top center vertical maxrows 1 maxcols 6
 set key autotitle columnheader
 set key samplen 3 spacing 1 font ",9"
 

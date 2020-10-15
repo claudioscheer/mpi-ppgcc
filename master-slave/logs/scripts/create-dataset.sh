@@ -19,7 +19,7 @@ row="seq. "
 for element in $total_time; do
     row="$row$element "
 done
-row="$row 0 0 0 0 0 0 0 0 $sequential_time 1 1"
+row="$row 0 0 0 0 0 0 0 0 $sequential_time 0 0"
 echo $row >> $linear_regression_dat_path
 
 processes=($(seq 2 2 12) 24)
@@ -56,7 +56,7 @@ row="seq. "
 for element in $total_time; do
     row="$row$element "
 done
-row="$row 0 0 1 1"
+row="$row 0 0 0 0"
 echo $row >> $bubble_sort_dat_path
 
 processes=($(seq 2 2 12) 24)
