@@ -1,5 +1,6 @@
 \documentclass[10pt, twocolumn]{report}
 
+\usepackage{color}
 \usepackage[toc,page]{appendix}
 \usepackage{authblk}
 \usepackage{amsmath}
@@ -8,14 +9,18 @@
 \usepackage{float}
 \usepackage{listings}
 
+\definecolor{mygray}{rgb}{0.4,0.4,0.4}
+
 \lstdefinestyle{cppStyle}{
 	captionpos=b,
 	numbers=left,
 	% xleftmargin=8pt,
-	numberstyle=\tiny,
+	numberstyle=\color{mygray}\ttfamily\tiny,
 	numbersep=8pt,
 	language=c++,
-	stringstyle=\ttfamily\tiny,
+	keywordstyle=\color{blue}\tiny,
+	stringstyle=\color{red}\tiny,
+	commentstyle=\color{green}\tiny,
 	basicstyle=\ttfamily\tiny,
 	showstringspaces=false,
 	breaklines,
@@ -34,23 +39,17 @@
 
 \maketitle
 
-\noindent asdfas w
+\section {Setup}
+Instead of using the LAD access provided by the professor, we run our own \textit{batch job} on a machine in the Cerrado cluster. As we developed in C++17, we require a newer version of GCC and OpenMPI than the one provided by LAD.
+
+\section{Bubble Sort}
 Include a title and one or two paragraphs describing what you plan to do. Tell what interviews, site visits, or other activity you plan. Be specific if you can. Include  one good reference you plan to used. This is an example of how to include a citation.
 
-\section{Introduction}
-Include a title and one or two paragraphs describing what you plan to do. Tell what interviews, site visits, or other activity you plan. Be specific if you can. Include  one good reference you plan to used. This is an example of how to include a citation.
-
-\section {Background}
+\section {Linear Regression}
 Give a background on your topic. Include references.
 
 \section{Results}
 Results of your interviews or observations. Use information and/or quotes from your interview or observations.
-
-\section{Discussion}
-Your comments or evaluation of interview or observations
-
-\section{Summary}
-Summarize your paper.
 
 \begin{appendices}
 	\chapter{Bubble Sort Source Code}

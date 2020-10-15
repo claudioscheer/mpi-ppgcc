@@ -13,7 +13,7 @@
 # - ppn: number of cores per node;
 # - cluster-Atlantica / cluster-Cerrado / cluster-Amazonia: cluster name;
 # - walltime: maximum allocation time;
-#PBS -l nodes=1:ppn=24:cluster-Cerrado,walltime=48:00:00
+#PBS -l nodes=2:ppn=24:cluster-Cerrado,walltime=48:00:00
 
 # Output directory.
 #PBS -d /home/claudio.scheer/Projects/mpi-ppgcc/master-slave
@@ -44,7 +44,7 @@ n=3
 
 # Bubble sort.
 number_vectors=1000
-vector_size=5000
+vector_size=2500
 
 cd bubble-sort
 for ((i = 1; i <= $n; i++)); do
@@ -52,7 +52,7 @@ for ((i = 1; i <= $n; i++)); do
 done
 
 for ((i = 1; i <= $n; i++)); do
-    processes=($(seq 2 1 12) 24)
+    processes=($(seq 2 2 24) 48)
     for np in "${processes[@]}"; do
         make mpi number-vectors=$number_vectors vector-size=$vector_size np=$np > ../logs/bubble-sort/mpi-$np-$i.txt 2>&1
     done
@@ -68,7 +68,7 @@ for ((i = 1; i <= $n; i++)); do
 done
 
 for ((i = 1; i <= $n; i++)); do
-    processes=($(seq 2 1 12) 24)
+    processes=($(seq 2 2 24) 48)
     for np in "${processes[@]}"; do
         for grain in 10000 100000 500000 1000000; do
             make mpi number-points=$number_points granularity=$grain np=$np > ../logs/linear-regression/mpi-$np-$grain-$i.txt 2>&1
