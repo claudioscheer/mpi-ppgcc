@@ -5,23 +5,22 @@ get_mean_std() {
 }
 
 script_dir=$(dirname "$0")
-n=3
+
+## LINEAR REGRESSION ##
 linear_regression_dat_path=$script_dir/linear-regression.dat
 rm $linear_regression_dat_path
 
-echo "np Sequential Sequential_std Grain-10000 10000_std Grain-100000 100000_std Grain-500000 500000_std Grain-1000000 1000000_std mean_time Speedup Efficiency" >> $linear_regression_dat_path
-
+echo "np Sequential Sequential_std Grain-10000 10000_std Grain-100000 100000_std Grain-500000 500000_std Grain-1000000 1000000_std mean_time_grains Speedup Efficiency" >> $linear_regression_dat_path
 
 file=$script_dir/../linear-regression/sequential-*.txt
 total_time=$(cat $file | grep -P "Time\slinear\sregression\s\(s\):" | grep -Po "[0-9]+[.][0-9]+" | get_mean_std)
+sequential_time=$(echo $total_time | awk '{ print $1 }')
 row="seq. "
 for element in $total_time; do
     row="$row$element "
 done
-row="$row 0 0 0 0 0 0 0 0 0 0 0"
+row="$row 0 0 0 0 0 0 0 0 $sequential_time 1 1"
 echo $row >> $linear_regression_dat_path
-
-sequential_time=$(echo $total_time | awk '{ print $1 }')
 
 processes=($(seq 2 2 24) 48)
 for np in "${processes[@]}"; do
@@ -39,6 +38,39 @@ for np in "${processes[@]}"; do
     time_grain=$(echo "scale=8; $time_grain / 4" | bc -l)
     speedup=$(echo "scale=8; $sequential_time / $time_grain" | bc -l)
     efficiency=$(echo "scale=8; $speedup / $np" | bc -l)
-    row="$row$time_grain $speedup $efficiency "
+    row="$row$time_grain $speedup $efficiency"
     echo $row >> $linear_regression_dat_path
 done
+## LINEAR REGRESSION ##
+
+## BUBBLE SORT ##
+bubble_sort_dat_path=$script_dir/bubble-sort.dat
+rm $bubble_sort_dat_path
+
+echo "np Sequential Sequential_std MPI MPI_std Speedup Efficiency" >> $bubble_sort_dat_path
+
+file=$script_dir/../bubble-sort/sequential-*.txt
+total_time=$(cat $file | grep -P "Time\ssort\s\(s\):" | grep -Po "[0-9]+[.][0-9]+" | get_mean_std)
+sequential_time=$(echo $total_time | awk '{ print $1 }')
+row="seq. "
+for element in $total_time; do
+    row="$row$element "
+done
+row="$row 0 0 1 1"
+echo $row >> $bubble_sort_dat_path
+
+processes=($(seq 2 2 24) 48)
+for np in "${processes[@]}"; do
+    row="$np 0 0 "
+    file=$script_dir/../bubble-sort/mpi-$np-*.txt
+    total_time=$(cat $file | grep -P "Time\ssort\s\(s\):" | grep -Po "[0-9]+[.][0-9]+" | get_mean_std)
+    for element in $total_time; do
+        row="$row$element "
+    done
+    t=$(echo $total_time | awk '{ print $1 }')
+    speedup=$(echo "scale=8; $sequential_time / $t" | bc -l)
+    efficiency=$(echo "scale=8; $speedup / $np" | bc -l)
+    row="$row$speedup $efficiency"
+    echo $row >> $bubble_sort_dat_path
+done
+## BUBBLE SORT ##
