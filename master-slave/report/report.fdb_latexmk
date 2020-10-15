@@ -1,9 +1,9 @@
 # Fdb version 3
-["pdflatex"] 1602724561 "report.tex" "report.pdf" "report" 1602724561
+["pdflatex"] 1602730761 "report.tex" "report.pdf" "report" 1602730761
   "../bubble-sort/dataset-generator.cpp" 1602471479 524 6728147603f004bab77f5f489d0e1f41 ""
   "../bubble-sort/sort-mpi.cpp" 1602706235 4459 178643035eb359f0da1657ba9bd5da8f ""
   "../bubble-sort/sort-seq.cpp" 1602609423 1883 0cb7c99d19c28da3ff1caf835ff903b7 ""
-  "../linear-regression/lr-mpi.cpp" 1602724559 7352 bd05e242bd6459b5d2044f9cb33f5203 ""
+  "../linear-regression/lr-mpi.cpp" 1602724574 7352 bd05e242bd6459b5d2044f9cb33f5203 ""
   "../linear-regression/lr-seq.cpp" 1602246218 2132 597ea68ea681b55cf9d08891093198bd ""
   "/etc/texmf/web2c/texmf.cnf" 1602517187 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -26,6 +26,7 @@
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmtt10.tfm" 1136768653 768 1321e9409b4137d6fb428ac9dc956269 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmtt8.tfm" 1136768653 768 d7b9a2629a0c353102ad947dc9221d49 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb" 1248133631 32080 340ef9bf63678554ee606688e7b5339d ""
+  "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb" 1248133631 36299 5f9df58c2139e7edcf37c8fca4bd384d ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1248133631 35752 024fb6c41858982481f6968b5fc26508 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb" 1248133631 32722 d7379af29a190c3f453aba36302ff5a9 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb" 1248133631 32362 179c33bbf43f19adbb3825bb4e36e57a ""
@@ -66,9 +67,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1581979058 38841 ce3692aa899bb693b90b87eaa5d4d84e ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1602517229 4770781 1ed1abab22da9c3e2cc82e4db562318b ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1602517270 8256743 4da3107d511dcdbab6bcf91795921c14 ""
-  "report.aux" 1602724561 1523 e6e3ed32ccaf7b35e3892b428ea4db84 "pdflatex"
-  "report.tex" 1602723763 2323 aff22ee38bb5959005a364b1d435a093 ""
+  "report.aux" 1602730761 1531 4d39c81582015dc45abd61e700d6fbac "pdflatex"
+  "report.tex" 1602730760 2461 f9e67a1e2fd118fd20b24d01dd98bc36 ""
   (generated)
-  "report.pdf"
   "report.aux"
   "report.log"
+  "report.pdf"
