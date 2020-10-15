@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
         // This avoids the need to deal with the last elements of the array.
         cout << "Error: granularity must be a multiple of the number of points."
              << endl;
-        MPI::COMM_WORLD.Abort(-1);
+        MPI_Abort(MPI_COMM_WORLD, -1);
     }
 
     // Commit Point struct to MPI.
