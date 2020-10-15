@@ -12,7 +12,7 @@ mpi-build:
 	$(MPI_CC) lr-mpi.cpp -o lr-mpi.o $(CFLAGS)
 
 mpi: mpi-build
-	mpirun -np $(np) --hostfile ../hosts ./lr-mpi.o $(number-points) $(granularity)
+	mpirun -np $(np) --oversubscribe ./lr-mpi.o $(number-points) $(granularity)
 
 .PHONY : clean
 clean:

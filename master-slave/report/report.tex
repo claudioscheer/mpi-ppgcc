@@ -40,7 +40,7 @@
 \maketitle
 
 \section {General Setup}
-Instead of using the LAD access provided by the professor, we ran our \textit{batch job} on two nodes in the Cerrado cluster. That is because we developed in C++17 and needed a newer version of GCC and OpenMPI than the one provided by LAD, and we already had a \textit{batch job} configured from previous works.
+Instead of using the LAD access provided by the professor, we ran our \textit{batch job} on one node in the Cerrado cluster. That is because we developed in C++17 and needed a newer version of GCC and OpenMPI than the one provided by LAD, and we already had a \textit{batch job} configured from previous works.
 
 All experiments were executed three times and then the average execution time and the standard deviation were calculated. For the implementation using MPI, we used the master-slave architecture. In short, the slave asks the master for a job, the master sends the job to the slave, the slave processes the job and returns the result. The master waits for the slave's results using an asynchronous call. Finally, when all jobs are completed, the master waits for all the asynchronous results of the slaves and asks the slave to `commit suicide'\footnote{What a horrible scenario!}.
 
