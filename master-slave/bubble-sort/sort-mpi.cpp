@@ -10,6 +10,13 @@
 
 using namespace std;
 
+string get_hostname() {
+    std::ifstream file("/etc/hostname");
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    return buffer.str();
+}
+
 vector<vector<int>> load_dataset(int number_vectors, int vector_size) {
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
     vector<vector<int>> vectors =
@@ -57,6 +64,8 @@ int main(int argc, char **argv) {
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
+
+    cout << "Hostname (" << my_rank << "): " << get_hostname() << endl;
 
     if (my_rank != 0) {
         int master = 0;

@@ -18,6 +18,13 @@ struct RegressionSubResults {
     unsigned long long int xy_sum;
 };
 
+string get_hostname() {
+    std::ifstream file("/etc/hostname");
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    return buffer.str();
+}
+
 vector<dataset::Point> load_dataset(unsigned long long int number_points) {
     double begin = MPI_Wtime();
     vector<dataset::Point> points = dataset::get_dataset(number_points);
@@ -70,6 +77,8 @@ int main(int argc, char **argv) {
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
+
+    cout << "Hostname (" << my_rank << "): " << get_hostname() << endl;
 
     if ((number_points % granularity) > 0) {
         // This avoids the need to deal with the last elements of the array.
