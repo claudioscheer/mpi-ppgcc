@@ -22,7 +22,7 @@ done
 row="$row 0 0 0 0 0 0 0 0 $sequential_time 1 1"
 echo $row >> $linear_regression_dat_path
 
-processes=($(seq 2 2 24) 48)
+processes=($(seq 2 2 12) 24)
 for np in "${processes[@]}"; do
     time_grain=0
     row="$np 0 0 "
@@ -59,7 +59,7 @@ done
 row="$row 0 0 1 1"
 echo $row >> $bubble_sort_dat_path
 
-processes=($(seq 2 2 24) 48)
+processes=($(seq 2 2 12) 24)
 for np in "${processes[@]}"; do
     row="$np 0 0 "
     file=$script_dir/../bubble-sort/mpi-$np-*.txt
