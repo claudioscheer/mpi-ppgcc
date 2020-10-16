@@ -1,6 +1,18 @@
 /home/claudio.scheer/opt/mpic++-9.3.0/bin/mpic++ lr-mpi.cpp -o lr-mpi.o -std=c++17
 /home/claudio.scheer/opt/mpic++-9.3.0/bin/mpirun -np 6 --oversubscribe ./lr-mpi.o 100000000 10000
-Time load dataset (s): 4.88225
-Time linear regression (s): 1.09194
+Hostname (0): cerrado13n
+
+Hostname (2): cerrado13n
+
+Hostname (4): cerrado13n
+
+Hostname (3): cerrado13n
+Hostname (1): cerrado13n
+Hostname (5): cerrado13n
+
+
+
+Time load dataset (s): 3.86531
+Time linear regression (s): 0.882401
 Slope: 0.11102
 Intercept: 10.56

@@ -1,0 +1,6 @@
+g++ sort-seq.cpp -o sort-seq.o -std=c++17
+./sort-seq.o 1000 2500
+Time load dataset (s): 0.0051305
+Number vectors: 1000
+Vector size: 2500
+Time sort (s): 242.998

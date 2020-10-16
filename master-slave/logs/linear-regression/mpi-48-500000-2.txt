@@ -1,6 +1,102 @@
 /home/claudio.scheer/opt/mpic++-9.3.0/bin/mpic++ lr-mpi.cpp -o lr-mpi.o -std=c++17
 /home/claudio.scheer/opt/mpic++-9.3.0/bin/mpirun -np 48 --oversubscribe ./lr-mpi.o 100000000 500000
-Time load dataset (s): 9.72705
-Time linear regression (s): 1.46199
+Hostname (0): cerrado13n
+
+Hostname (2): cerrado13n
+
+Hostname (5): cerrado13n
+Hostname (6): cerrado13n
+
+Hostname (14): cerrado13n
+
+Hostname (15): cerrado13n
+
+Hostname (24): cerrado13n
+
+Hostname (1): cerrado13n
+
+Hostname (4): cerrado13n
+
+Hostname (16): cerrado13n
+
+Hostname (32): cerrado13n
+
+Hostname (7): cerrado13n
+
+Hostname (27): cerrado13n
+Hostname (29): cerrado13n
+Hostname (35): cerrado13n
+
+Hostname (45): cerrado13n
+
+Hostname (46): cerrado13n
+
+Hostname (18): cerrado13n
+
+Hostname (19): cerrado13n
+
+Hostname (20): cerrado13n
+
+Hostname (23): cerrado13n
+
+Hostname (25): cerrado13n
+
+Hostname (26): cerrado13n
+
+
+
+Hostname (39): cerrado13n
+Hostname (47): cerrado13n
+Hostname (3): cerrado13n
+
+
+Hostname (21): cerrado13n
+
+Hostname (41): cerrado13n
+
+Hostname (43): cerrado13n
+Hostname (11): cerrado13n
+
+Hostname (28): cerrado13n
+Hostname (17): cerrado13n
+Hostname (37): cerrado13n
+
+
+
+Hostname (22): cerrado13n
+
+
+
+
+Hostname (33): cerrado13n
+Hostname (38): cerrado13n
+Hostname (31): cerrado13n
+Hostname (36): cerrado13n
+Hostname (40): cerrado13n
+Hostname (30): cerrado13n
+
+
+
+
+
+
+Hostname (44): cerrado13n
+
+Hostname (12): cerrado13n
+Hostname (34): cerrado13n
+Hostname (8): cerrado13n
+Hostname (9): cerrado13n
+
+
+
+Hostname (10): cerrado13n
+Hostname (42): cerrado13n
+
+
+
+Hostname (13): cerrado13n
+
+Time load dataset (s): 10.6108
+Time linear regression (s): 1.31245
 Slope: 0.11102
 Intercept: 10.56

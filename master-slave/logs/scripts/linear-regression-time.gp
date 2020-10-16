@@ -25,4 +25,5 @@ plot "linear-regression.dat" using 2:3:xticlabels(1) title col linewidth 2 linec
          "linear-regression.dat" using 6:7:xticlabels(1) title col linewidth 2 linecolor "#4169e1" fillstyle pattern 4, \
          "linear-regression.dat" using 8:9:xticlabels(1) title col linewidth 2 linecolor "#8b0000" fillstyle pattern 2, \
          "linear-regression.dat" using 10:11:xticlabels(1) title col linewidth 2 linecolor "#556b2f" fillstyle pattern 5, \
-         "linear-regression.dat" using 0:14 title col with linespoints axes x1y2 linewidth 1 linecolor "#e69f00" pointtype 5 pointsize .3
+         "linear-regression.dat" using 12:13:xticlabels(1) title col linewidth 2 fillstyle pattern 5, \
+         "linear-regression.dat" using 0:16 title col with linespoints axes x1y2 linewidth 1 linecolor "#e69f00" pointtype 5 pointsize .3

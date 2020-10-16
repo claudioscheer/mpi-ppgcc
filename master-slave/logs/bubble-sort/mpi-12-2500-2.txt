@@ -1,0 +1,31 @@
+/home/claudio.scheer/opt/mpic++-9.3.0/bin/mpic++ sort-mpi.cpp -o sort-mpi.o -std=c++17
+/home/claudio.scheer/opt/mpic++-9.3.0/bin/mpirun -np 12 --oversubscribe ./sort-mpi.o 1000 2500
+Hostname (6): cerrado13n
+
+Hostname (0): cerrado13n
+
+Hostname (1): cerrado13n
+
+Hostname (2): cerrado13n
+
+Hostname (7): cerrado13n
+
+Hostname (10): cerrado13n
+
+Hostname (3): cerrado13n
+
+Hostname (4): cerrado13n
+
+Hostname (5): cerrado13n
+
+Hostname (8): cerrado13n
+
+Hostname (9): cerrado13n
+
+Hostname (11): cerrado13n
+
+Time load dataset (s): 0.0111182
+Number processes: 12
+Number vectors: 1000
+Vector size: 2500
+Time sort (s): 24.3774
