@@ -13,7 +13,7 @@
 # - ppn: number of cores per node;
 # - cluster-Atlantica / cluster-Cerrado / cluster-Amazonia: cluster name;
 # - walltime: maximum allocation time;
-#PBS -l nodes=1:ppn=24:cluster-Cerrado,walltime=48:00:00
+#PBS -l nodes=cerrado13n:ppn=24+cerrado16n:ppn=24:cluster-Cerrado,walltime=999:00:00
 
 # Output directory.
 #PBS -d /home/claudio.scheer/Projects/mpi-ppgcc/master-slave
