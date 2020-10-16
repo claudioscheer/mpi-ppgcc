@@ -54,7 +54,7 @@ The bubble sort problem addressed here consists of sorting 1000 vectors with 250
 	\label{fig:bubble-sort-time}
 \end{figure}
 
-As the number of processes increases, the execution time is shorter. However, the efficiency of the parallel execution grows slowly from 4 to 12 processes. Even so, the efficiency of the bubble sort with MPI reaches 90\%. This indicates that, up to 12 processes, the bubble sort algorithm can exploit up to 90\% of the expected speedup.
+As the number of processes increases, the execution time is shorter. However, the efficiency of the parallel execution grows slowly from 4 to 12 processes. Even so, the efficiency of the bubble sort with MPI reaches 83.14\%. This indicates that, up to 12 processes, the bubble sort algorithm can exploit up to 83.14\% of the expected speedup.
 
 \begin{figure}[ht]
 	\centering
@@ -63,10 +63,10 @@ As the number of processes increases, the execution time is shorter. However, th
 	\label{fig:bubble-sort-speedup-efficiency}
 \end{figure}
 
-Figure~\ref{fig:bubble-sort-speedup-efficiency} shows that the speedup grows linearly for physical cores. However, when using hyper-threading, the speedup is only 31.31\% effective when compared to the number of processes. Another fact is that when the cores are in different nodes, speedup and efficiency begins to decrease.
+Figure~\ref{fig:bubble-sort-speedup-efficiency} shows that the speedup grows linearly for physical cores. However, when using hyper-threading, the speedup is only 28.31\% effective when compared to the number of processes. Another fact is that when the cores are in different nodes, speedup and efficiency begins to decrease.
 
 \section {Linear Regression}
-Linear regression is an algorithm used for predictive analysis. In summary, the algorithm finds a relationship between $x$ and $y$ and can predict a new $y$ using as input a $x$ not yet known by the model. To test the algorithm, we used 100000000 $x$ and $y$ points, with granularity of 10000, 100000, 500000 and 1000000 points. Figure~\ref{fig:linear-regression-time} shows the results for different number of processes and granularities, using the sequential (Listing~\ref{lst:linear-regression-sequential}) and the MPI (Listing~\ref{lst:linear-regression-mpi}) version.
+Linear regression is an algorithm used for predictive analysis. In summary, the algorithm finds a relationship between $x$ and $y$ and can predict a new $y$ using as input a $x$ not yet known by the model. To test the algorithm, we used 100000000 $x$ and $y$ points, with granularity of 1000, 10000, 100000, 500000 and 1000000 points. Figure~\ref{fig:linear-regression-time} shows the results for different number of processes and granularities, using the sequential (Listing~\ref{lst:linear-regression-sequential}) and the MPI (Listing~\ref{lst:linear-regression-mpi}) version.
 
 \begin{figure}[ht]
 	\centering
@@ -75,7 +75,9 @@ Linear regression is an algorithm used for predictive analysis. In summary, the 
 	\label{fig:linear-regression-time}
 \end{figure}
 
-In the configurations tested, lower granularity has a better performance. However, this may not be true for smaller granularities, as the number of messages sent will be higher. For the MPI version with two processes, the execution time was worse than the sequential version. It shows that the cost of sending messages to each slave costs about 23\% of the time. Figure~\ref{fig:linear-regression-speedup-efficiency} shows that, after 8 processes, the speedup stabilizes and efficiency drops. This fact shows that, regardless of the size of the input, the linear regression algorithm, using master-slave architecture, has a point where speedup and efficiency stop growing.
+In the configurations tested, grains of 10000 performs better. Larger grain imply fewer messages, but heavier. Smaller grain imply more messages. Therefore, there is an ideal configuration that can vary according to the program.
+
+For the MPI version with two processes, the execution time was worse than the sequential version. It shows that the cost of sending messages to each slave costs about 23\% of the time. Figure~\ref{fig:linear-regression-speedup-efficiency} shows that, after 8 processes, the speedup stabilizes and efficiency drops. This fact shows that, regardless of the size of the input, the linear regression algorithm, using master-slave architecture, has a point where speedup and efficiency stop growing.
 
 \begin{figure}[ht]
 	\centering
@@ -85,9 +87,9 @@ In the configurations tested, lower granularity has a better performance. Howeve
 \end{figure}
 
 \section{Discussion}
-In linear regression, hyper-threading increased the execution time when compared to the approach using all physical cores and the efficiency was only 5.7\%. For bubble sort, hyper-threading has a speedup, but not so efficient as using only the physical cores. Therefore, the characteristics of the problem influence the choice of whether or not to use hyper-threading. In addition, depending of the problem addressed using MPI and master-slave architecture, more processes can decrease the speedup.
+In linear regression, hyper-threading increased the execution time when compared to the approach using all physical cores and the efficiency was only 3.9\%. For bubble sort, hyper-threading has almost the same speedup as using all physical cores, but not as efficient as using only physical cores. Therefore, in general, hyper-threading can have a speedup, but efficiency tends to decrease. In addition, depending of the problem addressed using MPI and master-slave architecture, more processes can decrease the speedup.
 
-The main difference between the two problems is the speedup as the number of processes increases. Bubble sort will have a linear growth, while linear regression has a point where, even with more physical cores, the speedup stabilizes.
+The main difference between the two problems is the speedup as the number of processes increases. Bubble sort will have a linear growth, while linear regression has a point where, even with more physical cores, the speedup stabilizes and begins to decrease.
 
 \begin{appendices}
 	\chapter{Bubble Sort Source Code}
