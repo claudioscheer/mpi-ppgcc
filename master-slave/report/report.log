@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.10.12)  15 OCT 2020 20:25
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.10.12)  15 OCT 2020 22:51
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -217,7 +217,7 @@ Package pdftex.def Info: ../logs/scripts/linear-regression-time.pdf  used on inp
 
 pdfTeX warning: pdflatex (file ../logs/scripts/bubble-sort-speedup-efficiency.pdf): PDF inclusion: multiple pdfs with page group included in a single page
 >]
-<../logs/scripts/linear-regression-speedup-efficiency.pdf, id=88, 361.35pt x 216.81pt>
+<../logs/scripts/linear-regression-speedup-efficiency.pdf, id=118, 361.35pt x 216.81pt>
 File: ../logs/scripts/linear-regression-speedup-efficiency.pdf Graphic file (type pdf)
 <use ../logs/scripts/linear-regression-speedup-efficiency.pdf>
 Package pdftex.def Info: ../logs/scripts/linear-regression-speedup-efficiency.pdf  used on input line 82.
@@ -246,18 +246,18 @@ Appendix B.
 
 ]) [7] (./report.aux) ) 
 Here is how much of TeX's memory you used:
- 4229 strings out of 481239
- 57768 string characters out of 5920376
- 853838 words of memory out of 5000000
- 19447 multiletter control sequences out of 15000+600000
+ 4231 strings out of 481239
+ 57829 string characters out of 5920376
+ 853859 words of memory out of 5000000
+ 19449 multiletter control sequences out of 15000+600000
  539347 words of font info for 49 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 39i,8n,69p,659b,1833s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 39i,8n,69p,728b,1833s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb>
-Output written on report.pdf (8 pages, 216851 bytes).
+Output written on report.pdf (8 pages, 236481 bytes).
 PDF statistics:
- 335 PDF objects out of 1000 (max. 8388607)
- 210 compressed objects within 3 object streams
+ 485 PDF objects out of 1000 (max. 8388607)
+ 300 compressed objects within 3 object streams
  0 named destinations out of 1000 (max. 500000)
  21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
