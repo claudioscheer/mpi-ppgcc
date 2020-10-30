@@ -1,0 +1,85 @@
+#!/bin/bash
+
+#PBS -m abe
+
+# Verbose mode.
+#PBS -V
+
+# Email for notification.
+#PBS -M claudio.scheer@edu.pucrs.br
+
+# Machine parameters:
+# - nodes: number or name of nodes requested;
+# - ppn: number of cores per node;
+# - cluster-Atlantica / cluster-Cerrado / cluster-Amazonia: cluster name;
+# - walltime: maximum allocation time;
+#PBS -l nodes=cerrado13n:ppn=24+cerrado16n:ppn=24:cluster-Cerrado,walltime=999:00:00
+
+# Output directory.
+#PBS -d /home/claudio.scheer/Projects/mpi-ppgcc/master-slave
+
+#PBS -r n
+#PBS -j oe
+
+echo Running on host `hostname`
+echo
+echo Initial Time: `date`
+echo
+echo Directory is `pwd`
+echo
+echo This jobs runs on the following nodes:
+echo `cat $PBS_NODEFILE | uniq`
+echo
+echo JOB_ID:
+echo `echo $PBS_JOBID`
+echo --------------------------------------
+
+# Export GCC 9.3.0.
+source ~/opt/gcc-9.3.0/activate
+
+rm -rf logs
+mkdir -p logs/bubble-sort
+mkdir -p logs/linear-regression
+
+n=3
+
+# Bubble sort.
+number_vectors=1000
+
+cd bubble-sort
+for ((i = 1; i <= $n; i++)); do
+    for size in 500 2500; do
+        make sequential number-vectors=$number_vectors vector-size=$size > ../logs/bubble-sort/sequential-$size-$i.txt 2>&1
+    done
+done
+
+for ((i = 1; i <= $n; i++)); do
+    processes=($(seq 2 2 24) 48)
+    for size in 500 2500; do
+        for np in "${processes[@]}"; do
+            make mpi number-vectors=$number_vectors vector-size=$size np=$np > ../logs/bubble-sort/mpi-$np-$size-$i.txt 2>&1
+        done
+    done
+done
+cd -
+
+# Linear regression.
+number_points=100000000
+
+cd linear-regression
+for ((i = 1; i <= $n; i++)); do
+    make sequential number-points=$number_points > ../logs/linear-regression/sequential-$i.txt 2>&1
+done
+
+for ((i = 1; i <= $n; i++)); do
+    processes=($(seq 2 2 24) 48)
+    for np in "${processes[@]}"; do
+        for grain in 1000 10000 100000 500000 1000000; do
+            make mpi number-points=$number_points granularity=$grain np=$np > ../logs/linear-regression/mpi-$np-$grain-$i.txt 2>&1
+        done
+    done
+done
+cd -
+
+echo --------------------------------------
+echo Final Time: `date`
