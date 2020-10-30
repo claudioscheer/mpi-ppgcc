@@ -39,45 +39,17 @@ source ~/opt/gcc-9.3.0/activate
 
 rm -rf logs
 mkdir -p logs/bubble-sort
-mkdir -p logs/linear-regression
 
 n=3
 
 # Bubble sort.
-number_vectors=1000
-
 cd bubble-sort
 for ((i = 1; i <= $n; i++)); do
-    for size in 500 2500; do
-        make sequential number-vectors=$number_vectors vector-size=$size > ../logs/bubble-sort/sequential-$size-$i.txt 2>&1
-    done
+    make sequential vector-size=96000 > ../logs/bubble-sort/sequential-$size-$i.txt 2>&1
 done
 
 for ((i = 1; i <= $n; i++)); do
-    processes=($(seq 2 2 24) 48)
-    for size in 500 2500; do
-        for np in "${processes[@]}"; do
-            make mpi number-vectors=$number_vectors vector-size=$size np=$np > ../logs/bubble-sort/mpi-$np-$size-$i.txt 2>&1
-        done
-    done
-done
-cd -
-
-# Linear regression.
-number_points=100000000
-
-cd linear-regression
-for ((i = 1; i <= $n; i++)); do
-    make sequential number-points=$number_points > ../logs/linear-regression/sequential-$i.txt 2>&1
-done
-
-for ((i = 1; i <= $n; i++)); do
-    processes=($(seq 2 2 24) 48)
-    for np in "${processes[@]}"; do
-        for grain in 1000 10000 100000 500000 1000000; do
-            make mpi number-points=$number_points granularity=$grain np=$np > ../logs/linear-regression/mpi-$np-$grain-$i.txt 2>&1
-        done
-    done
+    make mpi vector-size=96000 delta=3000 np=32 > ../logs/bubble-sort/mpi-$np-$size-$i.txt 2>&1
 done
 cd -
 
