@@ -16,7 +16,7 @@
 #PBS -l nodes=cerrado13n:ppn=24+cerrado16n:ppn=24:cluster-Cerrado,walltime=999:00:00
 
 # Output directory.
-#PBS -d /home/claudio.scheer/Projects/mpi-ppgcc/master-slave
+#PBS -d /home/claudio.scheer/Projects/mpi-ppgcc/divide-conquer
 
 #PBS -r n
 #PBS -j oe
@@ -45,11 +45,11 @@ n=3
 # Bubble sort.
 cd bubble-sort
 for ((i = 1; i <= $n; i++)); do
-    make sequential vector-size=96000 > ../logs/bubble-sort/sequential-$size-$i.txt 2>&1
+    make sequential vector-size=96000 > ../logs/bubble-sort/sequential-96000-$i.txt 2>&1
 done
 
 for ((i = 1; i <= $n; i++)); do
-    make mpi vector-size=96000 delta=3000 np=32 > ../logs/bubble-sort/mpi-$np-$size-$i.txt 2>&1
+    make mpi vector-size=96000 delta=3000 np=32 > ../logs/bubble-sort/mpi-32-96000-$i.txt 2>&1
 done
 cd -
 
