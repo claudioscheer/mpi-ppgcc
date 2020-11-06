@@ -13,7 +13,7 @@
 # - ppn: number of cores per node;
 # - cluster-Atlantica / cluster-Cerrado / cluster-Amazonia: cluster name;
 # - walltime: maximum allocation time;
-#PBS -l nodes=cerrado13n:ppn=24+cerrado16n:ppn=24:cluster-Cerrado,walltime=999:00:00
+#PBS -l nodes=cerrado13n:ppn=24+cerrado14n:ppn=24:cluster-Cerrado,walltime=999:00:00
 
 # Output directory.
 #PBS -d /home/claudio.scheer/Projects/mpi-ppgcc/divide-conquer
@@ -45,11 +45,15 @@ n=3
 # Bubble sort.
 cd bubble-sort
 for ((i = 1; i <= $n; i++)); do
-    make sequential vector-size=96000 > ../logs/bubble-sort/sequential-96000-$i.txt 2>&1
+    make sequential vector-size=1000000 > ../logs/bubble-sort/sequential-1000000-$i.txt 2>&1
 done
 
 for ((i = 1; i <= $n; i++)); do
-    make mpi vector-size=96000 delta=3000 np=32 > ../logs/bubble-sort/mpi-32-96000-$i.txt 2>&1
+    make mpi vector-size=1000000 delta=250000 np=7 > ../logs/bubble-sort/mpi-7-1000000-250000-$i.txt 2>&1
+    make mpi vector-size=1000000 delta=125000 np=15 > ../logs/bubble-sort/mpi-15-1000000-125000-$i.txt 2>&1
+    make mpi vector-size=1000000 delta=62500 np=31 > ../logs/bubble-sort/mpi-31-1000000-62500-$i.txt 2>&1
+    make mpi vector-size=1000000 delta=31250 np=63 > ../logs/bubble-sort/mpi-63-1000000-31250-$i.txt 2>&1
+    make mpi vector-size=1000000 delta=15625 np=127 > ../logs/bubble-sort/mpi-127-1000000-15625-$i.txt 2>&1
 done
 cd -
 

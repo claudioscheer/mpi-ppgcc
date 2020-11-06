@@ -14,9 +14,11 @@ set key autotitle columnheader
 set key samplen 3 spacing 1 font ",9"
 
 set grid
+set boxwidth 0.3
+set style fill solid
 
 set y2tics
 set auto x
 
-plot "bubble-sort.dat" every ::1 using 0:6:xticlabels(1) title col with linespoints linewidth 1 linecolor "#00c000" pointtype 3 pointsize .5, \
-         "bubble-sort.dat" every ::1 using 0:7:xticlabels(1) title col with linespoints axes x1y2 linewidth 1 linecolor "#e69f00" pointtype 5 pointsize .3
+plot "bubble-sort.dat" using 7:xticlabels(1) title col with boxes axes x1y2 linecolor "#e69f00", \
+         "bubble-sort.dat" using 0:6:xticlabels(1) title col with linespoints linewidth 2 linecolor "#8b0000" pointtype 3 pointsize .8
