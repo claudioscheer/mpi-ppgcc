@@ -28,10 +28,10 @@ vector<int> bubble_sort(vector<int> v) {
     while ((c < (n - 1)) & swapped) {
         swapped = 0;
         for (int d = 0; d < n - c - 1; d++)
-            if (v.at(d) > v.at(d + 1)) {
-                temp = v.at(d);
-                v.at(d) = v.at(d + 1);
-                v.at(d + 1) = temp;
+            if (v[d] > v[d + 1]) {
+                temp = v[d];
+                v[d] = v[d + 1];
+                v[d + 1] = temp;
                 swapped = 1;
             }
         c++;
