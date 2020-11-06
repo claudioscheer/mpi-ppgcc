@@ -14,8 +14,7 @@ rm $bubble_sort_dat_path
 echo "np Sequential Sequential_std MPI MPI_std Speedup Efficiency" >> $bubble_sort_dat_path
 
 file=$script_dir/../bubble-sort/sequential-$vector_size-*.txt
-# total_time=$(cat $file | grep -P "Time\ssort\s\(s\):" | grep -Po "[0-9]+[.][0-9]+" | get_mean_std)
-total_time="4440 10"
+total_time=$(cat $file | grep -P "Time\ssort\s\(s\):" | grep -Po "[0-9]+" | get_mean_std)
 sequential_time=$(echo $total_time | awk '{ print $1 }')
 row="seq. "
 for element in $total_time; do
@@ -24,7 +23,7 @@ done
 row="$row 0 0 0 0"
 echo $row >> $bubble_sort_dat_path
 
-delta_np=("250000 7" "125000 15" "62500 31" "31250 63" "15625 127")
+delta_np=("500000 3" "250000 7" "125000 15" "62500 31" "31250 63" "15625 127")
 for d_np in "${delta_np[@]}"; do
     delta=$(echo $d_np | awk '{ print $1 }')
     np=$(echo $d_np | awk '{ print $2 }')

@@ -1,0 +1,4 @@
+g++ sort-seq.cpp -o sort-seq.o -std=c++17
+./sort-seq.o 1000000
+Time load dataset (s): 0.0576179
+Time sort (s): 11768

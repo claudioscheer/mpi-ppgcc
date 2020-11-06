@@ -1,5 +1,5 @@
 /home/claudio.scheer/opt/mpic++-9.3.0/bin/mpic++ sort-mpi.cpp -o sort-mpi.o -std=c++17
 /home/claudio.scheer/opt/mpic++-9.3.0/bin/mpirun -np 7 --oversubscribe ./sort-mpi.o 1000000 250000
-Time load dataset (s): 0.0618809
+Time load dataset (s): 0.0597142
 Vector size: 1000000
-Time sort (s): 2947.21
+Time sort (s): 666.523
