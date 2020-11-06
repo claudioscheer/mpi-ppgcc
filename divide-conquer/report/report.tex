@@ -51,12 +51,14 @@
 \maketitle
 
 \section*{General Setup}
-We ran our \textit{batch job} on two nodes (2x24 cores) in the Cerrado cluster. All experiments were executed three times and then the average execution time and the standard deviation were calculated. For the implementation using MPI, we used the master-slave architecture. In short, the slave asks the master for a job, the master sends the job to the slave, the slave processes the job and returns the result. The master waits for the slave's results using an asynchronous call. Finally, when all jobs are completed, the master waits for all the asynchronous results of the slaves and asks the slave to `commit suicide'\footnote{What a horrible scenario!}.
+We ran our \textit{batch job} on two nodes (2x12 cores, 2x24 when considering hyper-threading) in the Cerrado cluster. All experiments were executed three times and then the average execution time and the standard deviation were calculated. Efficiency and speedup were based on the execution time reported by the sequential execution of the bubble sort algorithm.
+
+For the implementation using MPI, we used the divide and conquer architecture. In short, the unsorted vector is divided until it has a specific size, named delta. The execution forms a perfect balanced binary tree. Therefore, the left and right children of a node sort a part of the vector and send it back to the parent. The parent will merge the two vectors received from the children, maintaining the order of the elements, and sent to the parent, until reaching the master node.
 
 \section*{Bubble Sort}
-The bubble sort problem addressed here consists of sorting 1000 vectors with 2500 integers. Each slave receives a vector to sort and return the sorted vector to the master. Figure~\ref{fig:bubble-sort-time} shows the results of the executions using the sequential (Listing~\ref{lst:bubble-sort-sequential}) and the MPI version (Listing~\ref{lst:bubble-sort-mpi}), with different numbers of slaves.
+The bubble sort problem addressed here consists of sorting one vector with 1000000 integers. Figure~\ref{fig:bubble-sort-speedup-efficiency} shows the results of the executions using the sequential (Listing~\ref{lst:bubble-sort-sequential}) and the MPI version (Listing~\ref{lst:bubble-sort-mpi}), with different numbers for delta.
 
-As the number of processes increases, the execution time is shorter. However, the efficiency of the parallel execution grows slowly from 4 to 12 processes. Even so, the efficiency of the bubble sort with MPI reaches 83.14\%. This indicates that, up to 12 processes, the bubble sort algorithm can exploit up to 83.14\% of the expected speedup.
+Since only the last level of the execution tree will sort the subvectors, the parent levels will not work. This causes an unbalanced exploitation of parallelism. To address this problem, we used a technique to force all the cores to, at some point, sort a subvector. So instead of changing the implementation to force all workers to sort a part of the vector, we simply increase the number of MPI processes (workers). This will force the cores to use hyper-threading or, sometimes, even the time-sharing technique, allowing a balanced exploitation of parallelism.
 
 \begin{figure}[ht]
 	\centering
@@ -65,12 +67,13 @@ As the number of processes increases, the execution time is shorter. However, th
 	\label{fig:bubble-sort-speedup-efficiency}
 \end{figure}
 
-Figure~\ref{fig:bubble-sort-speedup-efficiency} shows that the speedup grows linearly for physical cores. However, when using hyper-threading, the speedup is only 28.31\% effective when compared to the number of processes. Another fact is that when the cores are in different nodes, speedup and efficiency begins to decrease.
+When we used 31 workers, each worker had to sort subvectors with 62500 items. Of these workers, at least 7 of them had to be executed using hyper-threading. In addition, we used the other 9 idle cores. These two facts can explain the 83x increase in speedup when using 31 workers instead of 15.
 
-\section*{Discussion}
-In linear regression, hyper-threading increased the execution time when compared to the approach using all physical cores and the efficiency was only 3.9\%. For bubble sort, hyper-threading has almost the same speedup as using all physical cores, but not as efficient as using only physical cores. Therefore, in general, hyper-threading can have a speedup, but efficiency tends to decrease. In addition, depending of the problem addressed using MPI and master-slave architecture, more processes can decrease the speedup.
+Forcing cores to use time-sharing for some workers has also increased the speedup for the bubble sort algorithm. However, time-sharing reduced the efficiency, as expected, since workers have to wait for preemption to execute their task on the CPU.
 
-The main difference between the two problems is the speedup as the number of processes increases. Bubble sort will have a linear growth, while linear regression has a point where, even with more physical cores, the speedup stabilizes and begins to decrease.
+The explanation for this high speedup, even when using time-sharing, may come from the nature of the bubble sort algorithm. Bubble sort has a time complexity of $O(n^2)$ for the worst case scenario. Compared to other sorting algorithms, such as quicksort, the time complexity is the same for the worst case scenario. However, bubble sort algorithm is much less complex. This means that smaller subvectors tend to be sorted faster in bubble sort.
+
+Hence, even with the highest message traffic when more workers are used, the subvectors are sorted faster.
 
 \onecolumn
 
