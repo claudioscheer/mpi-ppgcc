@@ -21,4 +21,5 @@ set y2tics
 set auto x
 
 plot "bubble-sort.dat" using 7:xticlabels(1) title col with boxes axes x1y2 linecolor "#e69f00", \
+         "bubble-sort.dat" using 0:1:xticlabels(1) title "Optimal speedup" with linespoints linewidth 2 linecolor "#00613e" pointtype 5 pointsize .8, \
          "bubble-sort.dat" using 0:6:xticlabels(1) title col with linespoints linewidth 2 linecolor "#8b0000" pointtype 3 pointsize .8
