@@ -9,6 +9,40 @@ float time_difference_msec(struct timeval t0, struct timeval t1) {
            (t1.tv_usec - t0.tv_usec) / 1000.0f;
 }
 
+int *interleave_vectors(int a_size, int *a_vector, int b_size, int *b_vector) {
+    int *result;
+    result = (int *)malloc(sizeof(int) * (a_size + b_size));
+
+    int *small_vector, *large_vector;
+    int min, max;
+    if (a_size < b_size) {
+        small_vector = a_vector;
+        large_vector = b_vector;
+        min = a_size;
+        max = b_size;
+    } else {
+        small_vector = b_vector;
+        large_vector = a_vector;
+        min = b_size;
+        max = a_size;
+    }
+    int i = 0, s = 0, l = 0;
+    while (s < min) {
+        if (small_vector[s] < large_vector[l]) {
+            result[i] = small_vector[s++];
+        } else {
+            result[i] = large_vector[l++];
+        }
+        i = s + l;
+    }
+
+    while (l < max) {
+        result[i++] = large_vector[l++];
+    }
+
+    return result;
+}
+
 int *bubble_sort(int vector_size, int *vector_unsorted) {
     int swapped = 1;
 
@@ -30,6 +64,7 @@ int *bubble_sort(int vector_size, int *vector_unsorted) {
 
 int main(int argc, char **argv) {
     int vector_size = atoi(argv[1]);
+    float percentage_items_exchange = atof(argv[2]);
 
     MPI_Status status;
     int my_rank;
@@ -56,6 +91,7 @@ int main(int argc, char **argv) {
     int done = 0;
     while (!done) {
         int *subvector_sorted = bubble_sort(subvector_size, subvector_unsorted);
+
         if (my_rank != num_processes - 1) {
             MPI_Send(&subvector_sorted[subvector_size - 1], 1, MPI_INT,
                      my_rank + 1, 0, MPI_COMM_WORLD);
@@ -90,7 +126,9 @@ int main(int argc, char **argv) {
             done = 1;
             break;
         }
-        int number_items_share_left = subvector_size / 2;
+
+        int number_items_share_left =
+            subvector_size * percentage_items_exchange;
 
         if (my_rank != 0) {
             MPI_Send(&subvector_sorted[0], number_items_share_left, MPI_INT,
