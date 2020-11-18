@@ -12,7 +12,7 @@ mpi-build:
 	$(MPI_CC) sort-mpi.c -o sort-mpi.o $(CFLAGS)
 
 mpi: mpi-build
-	mpirun -np $(np) --oversubscribe ./sort-mpi.o $(vector-size) $(delta)
+	mpirun -np $(np) --oversubscribe ./sort-mpi.o $(vector-size) $(percentage-items-exchange)
 
 .PHONY : clean
 clean:
