@@ -147,6 +147,13 @@ int main(int argc, char **argv) {
                      0, MPI_COMM_WORLD, &status);
         }
         // --------------------THIRD PHASE--------------------
+        /* for (int i = 0; i < subvector_size + 1; i++) { */
+        /*     printf("%d ", subvector[i]); */
+        /* } */
+        /* printf("----- %d", my_rank); */
+        /* printf("\n"); */
+        /* fflush(stdout); */
+        /* break; */
     }
 
     t1 = MPI_Wtime();

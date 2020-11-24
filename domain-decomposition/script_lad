@@ -16,7 +16,7 @@
 #PBS -l nodes=cerrado13n:ppn=24+cerrado14n:ppn=24:cluster-Cerrado,walltime=999:00:00
 
 # Output directory.
-#PBS -d /home/claudio.scheer/Projects/mpi-ppgcc/divide-conquer
+#PBS -d /home/claudio.scheer/Projects/mpi-ppgcc/domain-decomposition
 
 #PBS -r n
 #PBS -j oe
@@ -44,17 +44,19 @@ n=3
 
 # Bubble sort.
 cd bubble-sort
-for ((i = 1; i <= $n; i++)); do
-    make sequential vector-size=1000000 > ../logs/bubble-sort/sequential-1000000-$i.txt 2>&1
-done
+make sequential vector-size=1008 > ../logs/bubble-sort/sequential-1008.txt 2>&1
+make mpi vector-size=1008 percentage-items-exchange=.1 np=24 > ../logs/bubble-sort/mpi-24-1008-txt 2>&1
+make mpi vector-size=1008 percentage-items-exchange=.1 np=48 > ../logs/bubble-sort/mpi-48-1008-txt 2>&1
+
+make sequential vector-size=1000032 > ../logs/bubble-sort/sequential-1000000.txt 2>&1
 
 for ((i = 1; i <= $n; i++)); do
-    make mpi vector-size=1000000 delta=500000 np=3 > ../logs/bubble-sort/mpi-3-1000000-500000-$i.txt 2>&1
-    make mpi vector-size=1000000 delta=250000 np=7 > ../logs/bubble-sort/mpi-7-1000000-250000-$i.txt 2>&1
-    make mpi vector-size=1000000 delta=125000 np=15 > ../logs/bubble-sort/mpi-15-1000000-125000-$i.txt 2>&1
-    make mpi vector-size=1000000 delta=62500 np=31 > ../logs/bubble-sort/mpi-31-1000000-62500-$i.txt 2>&1
-    make mpi vector-size=1000000 delta=31250 np=63 > ../logs/bubble-sort/mpi-63-1000000-31250-$i.txt 2>&1
-    make mpi vector-size=1000000 delta=15625 np=127 > ../logs/bubble-sort/mpi-127-1000000-15625-$i.txt 2>&1
+    make mpi vector-size=1000032 percentage-items-exchange=.1 np=24 > ../logs/bubble-sort/mpi-24-1000032-$i.txt 2>&1
+    make mpi vector-size=1000032 percentage-items-exchange=.3 np=24 > ../logs/bubble-sort/mpi-24-1000032-$i.txt 2>&1
+    make mpi vector-size=1000032 percentage-items-exchange=.5 np=24 > ../logs/bubble-sort/mpi-24-1000032-$i.txt 2>&1
+    make mpi vector-size=1000032 percentage-items-exchange=.1 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i.txt 2>&1
+    make mpi vector-size=1000032 percentage-items-exchange=.3 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i.txt 2>&1
+    make mpi vector-size=1000032 percentage-items-exchange=.5 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i.txt 2>&1
 done
 cd -
 
