@@ -147,47 +147,15 @@ int main(int argc, char **argv) {
                      0, MPI_COMM_WORLD, &status);
         }
         // --------------------THIRD PHASE--------------------
-        /* for (int i = 0; i < subvector_size; i++) { */
-        /*     printf("%d ", subvector[i]); */
-        /* } */
-        /* printf("----- %d", my_rank); */
-        /* printf("\n"); */
-        /* fflush(stdout); */
-        /* break; */
     }
 
     t1 = MPI_Wtime();
     double total_time = t1 - t0;
 
-    // --------------------AGGREGATES RESULTS ALL PROCESSES--------------------
-    if (my_rank > 0) {
-        MPI_Send(&subvector[0], subvector_size, MPI_INT, 0, 0, MPI_COMM_WORLD);
-    } else {
-        int final_vector[vector_size];
-        for (int i = 0; i < subvector_size; i++) {
-            final_vector[i] = subvector[i];
-        }
-
-        for (int i = 1; i < num_processes; i++) {
-            int subvector_received[subvector_size];
-            MPI_Recv(&subvector_received[0], subvector_size, MPI_INT, i, 0,
-                     MPI_COMM_WORLD, &status);
-
-            for (int j = 0; j < subvector_size; j++) {
-                final_vector[subvector_size * i + j] = subvector_received[j];
-            }
-        }
-
-        printf("Final vector:\n");
-        for (int i = 0; i < vector_size; i++) {
-            printf("%d ", final_vector[i]);
-        }
-        printf("\n");
-
+    if (my_rank == 0) {
         printf("Vector size: %d\n", vector_size);
         printf("Time sort (ms): %f\n", total_time);
     }
-    // --------------------AGGREGATES RESULTS ALL PROCESSES--------------------
 
     MPI_Finalize();
 
