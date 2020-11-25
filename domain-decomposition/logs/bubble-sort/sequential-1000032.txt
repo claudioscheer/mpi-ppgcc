@@ -1,0 +1,5 @@
+gcc sort-seq.c -o sort-seq.o 
+./sort-seq.o 1000032
+Vector sorted: 1
+Vector size: 1000032
+Time sort (ms): 2182095.750000
