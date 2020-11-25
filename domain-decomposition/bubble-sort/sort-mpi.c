@@ -10,11 +10,6 @@
 #define OPTIMIZE_BROADCAST 1
 #define BUBBLE_SORT_ONLY_ONCE 1
 
-float time_difference_msec(struct timeval t0, struct timeval t1) {
-    return (t1.tv_sec - t0.tv_sec) * 1000.0f +
-           (t1.tv_usec - t0.tv_usec) / 1000.0f;
-}
-
 void interleave_vector(int *vector, int a_init_index, int a_end_index,
                        int b_init_index, int b_end_index, int *result) {
     if (a_end_index - a_init_index > b_end_index - b_init_index) {
@@ -87,7 +82,7 @@ int main(int argc, char **argv) {
     int process_status[num_processes];
     int interleaved_shared_vector_pre_defined[number_items_shared * 2];
 #if BUBBLE_SORT_ONLY_ONCE == 1
-    int interleaved_subvector_pre_defined[subvector_size - number_items_shared];
+    int interleaved_subvector_pre_defined[subvector_size];
     int bubble_sort_executed = 0;
 #endif
 
@@ -114,10 +109,9 @@ int main(int argc, char **argv) {
             }
 
             interleave_vector(subvector, 0, number_items_shared - 1,
-                              number_items_shared,
-                              subvector_size - number_items_shared - 1,
+                              number_items_shared, subvector_size - 1,
                               interleaved_subvector_pre_defined);
-            for (int i = 0; i < subvector_size - number_items_shared; i++) {
+            for (int i = 0; i < subvector_size; i++) {
                 subvector[i] = interleaved_subvector_pre_defined[i];
             }
         }
@@ -204,7 +198,7 @@ int main(int argc, char **argv) {
     }
 
     t1 = MPI_Wtime();
-    double total_time = t1 - t0;
+    double total_time = (t1 - t0) * 1000;
 
 #if DEBUG == 1
     if (my_rank > 0) {
@@ -231,11 +225,17 @@ int main(int argc, char **argv) {
         }
         printf("\n");
 
+        printf("DEBUG: %d\n", DEBUG);
+        printf("OPTIMIZE_BROADCAST: %d\n", OPTIMIZE_BROADCAST);
+        printf("BUBBLE_SORT_ONLY_ONCE: %d\n", BUBBLE_SORT_ONLY_ONCE);
         printf("Vector size: %d\n", vector_size);
         printf("Time sort (ms): %f\n", total_time);
     }
 #else
     if (my_rank == 0) {
+        printf("DEBUG: %d\n", DEBUG);
+        printf("OPTIMIZE_BROADCAST: %d\n", OPTIMIZE_BROADCAST);
+        printf("BUBBLE_SORT_ONLY_ONCE: %d\n", BUBBLE_SORT_ONLY_ONCE);
         printf("Vector size: %d\n", vector_size);
         printf("Time sort (ms): %f\n", total_time);
     }
