@@ -54,12 +54,26 @@ for ((i = 1; i <= $n; i++)); do
     # make mpi vector-size=1000032 percentage-items-exchange=.3 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i.txt 2>&1
     # make mpi vector-size=1000032 percentage-items-exchange=.5 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i.txt 2>&1
 
-    make mpi vector-size=1000032 percentage-items-exchange=.1 np=24 > ../logs/bubble-sort/mpi-24-1000032-$i-broadcast.txt 2>&1
-    make mpi vector-size=1000032 percentage-items-exchange=.3 np=24 > ../logs/bubble-sort/mpi-24-1000032-$i-broadcast.txt 2>&1
-    make mpi vector-size=1000032 percentage-items-exchange=.5 np=24 > ../logs/bubble-sort/mpi-24-1000032-$i-broadcast.txt 2>&1
-    make mpi vector-size=1000032 percentage-items-exchange=.1 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i-broadcast.txt 2>&1
-    make mpi vector-size=1000032 percentage-items-exchange=.3 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i-broadcast.txt 2>&1
-    make mpi vector-size=1000032 percentage-items-exchange=.5 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i-broadcast.txt 2>&1
+    # make mpi vector-size=1000032 percentage-items-exchange=.1 np=24 > ../logs/bubble-sort/mpi-24-1000032-$i-broadcast.txt 2>&1
+    # make mpi vector-size=1000032 percentage-items-exchange=.3 np=24 > ../logs/bubble-sort/mpi-24-1000032-$i-broadcast.txt 2>&1
+    # make mpi vector-size=1000032 percentage-items-exchange=.5 np=24 > ../logs/bubble-sort/mpi-24-1000032-$i-broadcast.txt 2>&1
+    # make mpi vector-size=1000032 percentage-items-exchange=.1 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i-broadcast.txt 2>&1
+    # make mpi vector-size=1000032 percentage-items-exchange=.3 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i-broadcast.txt 2>&1
+    # make mpi vector-size=1000032 percentage-items-exchange=.5 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i-broadcast.txt 2>&1
+
+    # make mpi vector-size=1000032 percentage-items-exchange=.1 np=24 > ../logs/bubble-sort/mpi-24-1000032-$i-bs.txt 2>&1
+    # make mpi vector-size=1000032 percentage-items-exchange=.3 np=24 > ../logs/bubble-sort/mpi-24-1000032-$i-bs.txt 2>&1
+    # make mpi vector-size=1000032 percentage-items-exchange=.5 np=24 > ../logs/bubble-sort/mpi-24-1000032-$i-bs.txt 2>&1
+    # make mpi vector-size=1000032 percentage-items-exchange=.1 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i-bs.txt 2>&1
+    # make mpi vector-size=1000032 percentage-items-exchange=.3 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i-bs.txt 2>&1
+    # make mpi vector-size=1000032 percentage-items-exchange=.5 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i-bs.txt 2>&1
+
+    make mpi vector-size=1000032 percentage-items-exchange=.1 np=24 > ../logs/bubble-sort/mpi-24-1000032-$i-bs-broadcast.txt 2>&1
+    make mpi vector-size=1000032 percentage-items-exchange=.3 np=24 > ../logs/bubble-sort/mpi-24-1000032-$i-bs-broadcast.txt 2>&1
+    make mpi vector-size=1000032 percentage-items-exchange=.5 np=24 > ../logs/bubble-sort/mpi-24-1000032-$i-bs-broadcast.txt 2>&1
+    make mpi vector-size=1000032 percentage-items-exchange=.1 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i-bs-broadcast.txt 2>&1
+    make mpi vector-size=1000032 percentage-items-exchange=.3 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i-bs-broadcast.txt 2>&1
+    make mpi vector-size=1000032 percentage-items-exchange=.5 np=48 > ../logs/bubble-sort/mpi-48-1000032-$i-bs-broadcast.txt 2>&1
 done
 cd -
 
