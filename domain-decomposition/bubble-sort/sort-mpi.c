@@ -1,15 +1,12 @@
 // TO DO
-// - If a process has failed, stop broadcasting.
-// - Try different sizes of items being transmitted.
 // - Count iterations number.
-// - Apply bubble sort only once. Use interleave.
 
 #include "dataset-generator.h"
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
-#define DEBUG 1
+#define DEBUG 0
 #define OPTIMIZE_BROADCAST 1
 #define BUBBLE_SORT_ONLY_ONCE 1
 
@@ -18,9 +15,16 @@ float time_difference_msec(struct timeval t0, struct timeval t1) {
            (t1.tv_usec - t0.tv_usec) / 1000.0f;
 }
 
-// a must be the smallest vector. Otherwise, the interleave will be wrong.
 void interleave_vector(int *vector, int a_init_index, int a_end_index,
                        int b_init_index, int b_end_index, int *result) {
+    if (a_end_index - a_init_index > b_end_index - b_init_index) {
+        int temp = a_init_index;
+        a_init_index = b_init_index;
+        b_init_index = temp;
+        temp = a_end_index;
+        a_end_index = b_end_index;
+        b_end_index = temp;
+    }
 
     int i = 0, a = a_init_index, b = b_init_index;
     while (a <= a_end_index || b <= b_end_index) {
@@ -79,13 +83,47 @@ int main(int argc, char **argv) {
     int subvector[subvector_size + number_items_shared];
     get_vector_offset(vector_size, subvector_size, subvector, my_rank);
 
+    // Avoid allocating a new vector in each iteration.
     int process_status[num_processes];
-    int interleaved_shared_vector[number_items_shared * 2];
+    int interleaved_shared_vector_pre_defined[number_items_shared * 2];
+#if BUBBLE_SORT_ONLY_ONCE == 1
+    int interleaved_subvector_pre_defined[subvector_size - number_items_shared];
+    int bubble_sort_executed = 0;
+#endif
+
+#if DEBUG == 1
+    int loop_index = 0;
+#endif
 
     int done = 0;
     while (!done) {
         // --------------------FIRST PHASE--------------------
+#if BUBBLE_SORT_ONLY_ONCE == 1
+        if (!bubble_sort_executed) {
+            bubble_sort(subvector_size, subvector);
+            bubble_sort_executed = 1;
+        } else {
+            interleave_vector(subvector, number_items_shared,
+                              subvector_size - number_items_shared - 1,
+                              subvector_size - number_items_shared,
+                              subvector_size - 1,
+                              interleaved_subvector_pre_defined);
+            for (int i = 0; i < subvector_size - number_items_shared; i++) {
+                subvector[i + number_items_shared] =
+                    interleaved_subvector_pre_defined[i];
+            }
+
+            interleave_vector(subvector, 0, number_items_shared - 1,
+                              number_items_shared,
+                              subvector_size - number_items_shared - 1,
+                              interleaved_subvector_pre_defined);
+            for (int i = 0; i < subvector_size - number_items_shared; i++) {
+                subvector[i] = interleaved_subvector_pre_defined[i];
+            }
+        }
+#else
         bubble_sort(subvector_size, subvector);
+#endif
         // --------------------FIRST PHASE--------------------
 
         // --------------------SECOND PHASE--------------------
@@ -136,15 +174,15 @@ int main(int argc, char **argv) {
             interleave_vector(subvector, subvector_size - number_items_shared,
                               subvector_size - 1, subvector_size,
                               subvector_size + number_items_shared - 1,
-                              interleaved_shared_vector);
+                              interleaved_shared_vector_pre_defined);
 
-            MPI_Send(&interleaved_shared_vector[number_items_shared],
-                     number_items_shared, MPI_INT, my_rank + 1, 0,
-                     MPI_COMM_WORLD);
+            MPI_Send(
+                &interleaved_shared_vector_pre_defined[number_items_shared],
+                number_items_shared, MPI_INT, my_rank + 1, 0, MPI_COMM_WORLD);
 
             for (int i = 0; i < number_items_shared; i++) {
                 subvector[subvector_size - number_items_shared + i] =
-                    interleaved_shared_vector[i];
+                    interleaved_shared_vector_pre_defined[i];
             }
         }
         if (my_rank > 0) {
@@ -153,12 +191,15 @@ int main(int argc, char **argv) {
         }
         // --------------------THIRD PHASE--------------------
 #if DEBUG == 1
-        for (int i = 0; i < subvector_size + 1; i++) {
-            printf("%d ", subvector[i]);
+        if (loop_index == 0) {
+            for (int i = 0; i < subvector_size; i++) {
+                printf("%d ", subvector[i]);
+            }
+            printf("----- %d", my_rank);
+            printf("\n");
+            fflush(stdout);
         }
-        printf("----- %d", my_rank);
-        printf("\n");
-        fflush(stdout);
+        loop_index++;
 #endif
     }
 
