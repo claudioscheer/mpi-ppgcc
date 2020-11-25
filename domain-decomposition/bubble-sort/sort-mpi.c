@@ -51,6 +51,17 @@ void bubble_sort(int vector_size, int *vector_unsorted) {
     }
 }
 
+int is_vector_sorted(int *vector, int vector_size) {
+    int last_element = -1;
+    for (int i = 0; i < vector_size; i++) {
+        if (last_element > vector[i]) {
+            return 0;
+        }
+        last_element = vector[i];
+    }
+    return 1;
+}
+
 int main(int argc, char **argv) {
     int vector_size = atoi(argv[1]);
     float percentage_items_exchange = atof(argv[2]);
@@ -228,6 +239,8 @@ int main(int argc, char **argv) {
         printf("DEBUG: %d\n", DEBUG);
         printf("OPTIMIZE_BROADCAST: %d\n", OPTIMIZE_BROADCAST);
         printf("BUBBLE_SORT_ONLY_ONCE: %d\n", BUBBLE_SORT_ONLY_ONCE);
+        printf("Vector sorted: %d\n",
+               is_vector_sorted(subvector, subvector_size));
         printf("Vector size: %d\n", vector_size);
         printf("Time sort (ms): %f\n", total_time);
     }
@@ -236,6 +249,8 @@ int main(int argc, char **argv) {
         printf("DEBUG: %d\n", DEBUG);
         printf("OPTIMIZE_BROADCAST: %d\n", OPTIMIZE_BROADCAST);
         printf("BUBBLE_SORT_ONLY_ONCE: %d\n", BUBBLE_SORT_ONLY_ONCE);
+        printf("Vector sorted: %d\n",
+               is_vector_sorted(subvector, subvector_size));
         printf("Vector size: %d\n", vector_size);
         printf("Time sort (ms): %f\n", total_time);
     }
