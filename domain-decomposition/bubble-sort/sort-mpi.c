@@ -9,6 +9,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#define DEBUG 1
+#define OPTIMIZE_BROADCAST 1
+#define BUBBLE_SORT_ONLY_ONCE 1
 
 float time_difference_msec(struct timeval t0, struct timeval t1) {
     return (t1.tv_sec - t0.tv_sec) * 1000.0f +
@@ -16,11 +19,8 @@ float time_difference_msec(struct timeval t0, struct timeval t1) {
 }
 
 // a must be the smallest vector. Otherwise, the interleave will be wrong.
-int *interleave_vector(int *vector, int a_init_index, int a_end_index,
-                       int b_init_index, int b_end_index) {
-    int *result =
-        (int *)malloc(sizeof(int) * ((a_end_index - a_init_index) +
-                                     (b_end_index - b_init_index) + 2));
+void interleave_vector(int *vector, int a_init_index, int a_end_index,
+                       int b_init_index, int b_end_index, int *result) {
 
     int i = 0, a = a_init_index, b = b_init_index;
     while (a <= a_end_index || b <= b_end_index) {
@@ -33,8 +33,6 @@ int *interleave_vector(int *vector, int a_init_index, int a_end_index,
         }
         i++;
     }
-
-    return result;
 }
 
 void bubble_sort(int vector_size, int *vector_unsorted) {
@@ -82,6 +80,7 @@ int main(int argc, char **argv) {
     get_vector_offset(vector_size, subvector_size, subvector, my_rank);
 
     int process_status[num_processes];
+    int interleaved_shared_vector[number_items_shared * 2];
 
     int done = 0;
     while (!done) {
@@ -105,13 +104,19 @@ int main(int argc, char **argv) {
 
         for (int i = 0; i < num_processes; i++) {
             MPI_Bcast(&process_status[i], 1, MPI_INT, i, MPI_COMM_WORLD);
-            // Stop when receive zero.
+#if OPTIMIZE_BROADCAST == 1
+            if (!process_status[i]) {
+                break;
+            }
+#endif
         }
 
         int vector_sorted = 1;
         for (int i = 0; i < num_processes; i++) {
             vector_sorted &= process_status[i];
-            // Stop when receive zero.
+            if (!vector_sorted) {
+                break;
+            }
         }
         if (vector_sorted) {
             done = 1;
@@ -128,18 +133,18 @@ int main(int argc, char **argv) {
             MPI_Recv(&subvector[subvector_size], number_items_shared, MPI_INT,
                      my_rank + 1, 0, MPI_COMM_WORLD, &status);
 
-            int *interleaved_vector = interleave_vector(
-                subvector, subvector_size - number_items_shared,
-                subvector_size - 1, subvector_size,
-                subvector_size + number_items_shared - 1);
+            interleave_vector(subvector, subvector_size - number_items_shared,
+                              subvector_size - 1, subvector_size,
+                              subvector_size + number_items_shared - 1,
+                              interleaved_shared_vector);
 
-            MPI_Send(&interleaved_vector[number_items_shared],
+            MPI_Send(&interleaved_shared_vector[number_items_shared],
                      number_items_shared, MPI_INT, my_rank + 1, 0,
                      MPI_COMM_WORLD);
 
             for (int i = 0; i < number_items_shared; i++) {
                 subvector[subvector_size - number_items_shared + i] =
-                    interleaved_vector[i];
+                    interleaved_shared_vector[i];
             }
         }
         if (my_rank > 0) {
@@ -147,22 +152,53 @@ int main(int argc, char **argv) {
                      0, MPI_COMM_WORLD, &status);
         }
         // --------------------THIRD PHASE--------------------
-        /* for (int i = 0; i < subvector_size + 1; i++) { */
-        /*     printf("%d ", subvector[i]); */
-        /* } */
-        /* printf("----- %d", my_rank); */
-        /* printf("\n"); */
-        /* fflush(stdout); */
-        /* break; */
+#if DEBUG == 1
+        for (int i = 0; i < subvector_size + 1; i++) {
+            printf("%d ", subvector[i]);
+        }
+        printf("----- %d", my_rank);
+        printf("\n");
+        fflush(stdout);
+#endif
     }
 
     t1 = MPI_Wtime();
     double total_time = t1 - t0;
 
+#if DEBUG == 1
+    if (my_rank > 0) {
+        MPI_Send(&subvector[0], subvector_size, MPI_INT, 0, 0, MPI_COMM_WORLD);
+    } else {
+        int final_vector[vector_size];
+        for (int i = 0; i < subvector_size; i++) {
+            final_vector[i] = subvector[i];
+        }
+
+        for (int i = 1; i < num_processes; i++) {
+            int subvector_received[subvector_size];
+            MPI_Recv(&subvector_received[0], subvector_size, MPI_INT, i, 0,
+                     MPI_COMM_WORLD, &status);
+
+            for (int j = 0; j < subvector_size; j++) {
+                final_vector[subvector_size * i + j] = subvector_received[j];
+            }
+        }
+
+        printf("Final vector:\n");
+        for (int i = 0; i < vector_size; i++) {
+            printf("%d ", final_vector[i]);
+        }
+        printf("\n");
+
+        printf("Vector size: %d\n", vector_size);
+        printf("Time sort (ms): %f\n", total_time);
+    }
+#else
     if (my_rank == 0) {
         printf("Vector size: %d\n", vector_size);
         printf("Time sort (ms): %f\n", total_time);
     }
+#endif
 
     MPI_Finalize();
 
