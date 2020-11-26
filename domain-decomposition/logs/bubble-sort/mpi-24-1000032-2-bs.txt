@@ -1,8 +1,0 @@
-/home/claudio.scheer/opt/mpic++-9.3.0/bin/mpicc sort-mpi.c -o sort-mpi.o 
-/home/claudio.scheer/opt/mpic++-9.3.0/bin/mpirun -np 24 --oversubscribe ./sort-mpi.o 1000032 .5
-DEBUG: 0
-OPTIMIZE_BROADCAST: 1
-BUBBLE_SORT_ONLY_ONCE: 1
-Vector sorted: 1
-Vector size: 1000032
-Time sort (ms): 14344.843825
