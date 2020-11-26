@@ -19,6 +19,7 @@ set style histogram cluster gap 2
 set style fill solid border rgb "black"
 
 set y2tics
+set format y2 "2^{%L}"
 set logscale y2 2
 set logscale y 2
 set auto x
