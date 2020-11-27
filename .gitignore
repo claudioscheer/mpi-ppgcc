@@ -40,11 +40,11 @@
 
 ## Build tool auxiliary files:
 *.fdb_latexmk
-    *.synctex
+*.synctex
 *.synctex(busy)
-    *.synctex.gz
+*.synctex.gz
 *.synctex.gz(busy)
-    *.pdfsync
+*.pdfsync
 
 ## Build tool directories for auxiliary files
 # latexrun
