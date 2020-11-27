@@ -52,9 +52,7 @@
 
 We ran our \textit{batch job} on two nodes (2x12 cores, 2x24 when considering hyper-threading) in the Cerrado cluster. All experiments were executed three times and then the average execution time and the standard deviation were calculated. Efficiency and speedup were based on the execution time reported by the sequential execution of the bubble sort algorithm.
 
-For the implementation using MPI, we used the domain decomposition philosophy. In short, each process sorts $1/n$ of the vector using the bubble sort algorithm and shares its lowest values with the left neighbor. After that, the piece of the vector shared is interleaved with the vector held by the left neighbor. We tested the sharing of 10\%, 30\% and 50\% of the vector. These steps are repeated until the vector distributed over the processes is sorted. In this report, we discuss three optimization that we perform in this workflow.
-
-Considering the computational power available, we tested our implementation using the 24 physical cores with and without hyper-threading.
+For the implementation using MPI, we used the domain decomposition philosophy. In short, each process sorts $1/n$ of the vector using the bubble sort algorithm and shares its lowest values with the left neighbor. The piece of the vector shared is interleaved with the vector held by the left neighbor, and the same process is repeated until the vector is sorted. In this report, we discuss three optimization that we perform in this workflow.
 
 \begin{figure}[ht]
 	\centering
@@ -77,30 +75,32 @@ According to the results seen in Figure~\ref{fig:bubble-sort-speedup-efficiency}
 
 The first optimization was to reduce the amount of broadcast messages sent by processes to check whether they are all sorted or not when compared with the other processes. Therefore, as soon as a broadcast message returns that a process is not sorted in relation to the left neighbor, we stop sending and receiving broadcast messages.
 
-As shown in Figure~\ref{fig:bubble-sort-speedup-efficiency}, the results using this optimization, compared to results without optimization, were almost the same. Even when the percentage of numbers shared between the processes were higher, which results in faster convergence, the reduction in broadcast messages was not significant.
+As shown in Figure~\ref{fig:bubble-sort-speedup-efficiency}, the results using this optimization, compared to results without optimization, were in the range of the standard deviation. Even when the percentage of numbers shared between the processes were higher, which results in faster convergence, the reduction in broadcast messages was not significant. TALK ABOUT THE STRESS TEST.
 
 
 \section*{Interleave instead of bubble sort}
 
 The second optimization was focused on reducing the use of the bubble sort algorithm as much as possible, since this algorithm has a time complexity of $O(n)$. Thus, as we can interleave the vector with the part of the vector shared between the processes, it is possible to execute the bubble sort algorithm only once in each process. To use interleaving instead of bubble sort, we first interleave the vector with the percentage of numbers received from right, ignoring the percentage of numbers received from the left. Finally, we interleave the ignored part with the entire vector. It is not possible to call just once the interleave method, as we can end up with three vector pieces in a single process.
 
-This optimization lead to a speedup higher than the optimal speedup. Different from the implementations discussed previously, this optimization has a higher speedup when using hyper-threading. As the interleave algorithm has a linear time complexity, the percentage of items shared between the processes does not have a high impact on speedup or efficiency.
+This optimization lead to a speedup higher than the optimal speedup. As the interleave algorithm has a linear time complexity, the percentage of items shared between the processes does not have a high impact on speedup or efficiency when using all physical cores or hyper-threading.
 
 
 \section*{Broadcast and interleave}
 
-We also tested using both optimization discussed above at the same time. The results showed that this can lead to almost the same results as using just the interleaving optimization.
+We also tested using both optimization discussed above at the same time. The results showed that this can lead to almost the same results as using just the interleaving optimization. However, when using more process than hyper-threading limit, the results shows that sharing a larger percentage of number is better. Despite this, there is a loss of efficiency and, at some point, a lost of speedup. We believe that this is due to the number of broadcast messages that must be used to synchronize all of these processes.
 
 
 \section*{Discussion}
 
 Finally, the broadcast messages, even when widely required, have no significant impact on the domain decomposition performance with MPI. The main bottleneck in this process is the bubble sort algorithm.
 
-Comparing the domain decomposition, with its better optimization, with the divide and conquer approach shows that divide and conquer has a much better speedup and efficiency when using hyper-threading.
+Comparing the domain decomposition, with its better optimization, with the divide and conquer approach shows that divide and conquer has a much better speedup and efficiency when using more processes than hyper-threading.
+
 
 \onecolumn
 
 \section*{Bubble Sort Source Code}
+
 \lstinputlisting[caption=Dataset generator,style=cStyle]{../bubble-sort/dataset-generator.h}
 \lstinputlisting[caption=Bubble Sort Sequential,label=lst:bubble-sort-sequential,style=cStyle]{../bubble-sort/sort-seq.c}
 \lstinputlisting[caption=Bubble Sort MPI,label=lst:bubble-sort-mpi,style=cStyle]{../bubble-sort/sort-mpi.c}

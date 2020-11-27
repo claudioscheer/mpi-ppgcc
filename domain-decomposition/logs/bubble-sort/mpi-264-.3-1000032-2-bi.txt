@@ -1,0 +1,8 @@
+/home/claudio.scheer/opt/mpic++-9.3.0/bin/mpicc sort-mpi-bs-broadcast.c -o sort-mpi-bs-broadcast.o 
+/home/claudio.scheer/opt/mpic++-9.3.0/bin/mpirun -np 264 --oversubscribe ./sort-mpi-bs-broadcast.o 1000032 .3
+DEBUG: 0
+OPTIMIZE_BROADCAST: 1
+BUBBLE_SORT_ONLY_ONCE: 1
+Vector sorted: 1
+Vector size: 1000032
+Time sort (ms): 10637.450091

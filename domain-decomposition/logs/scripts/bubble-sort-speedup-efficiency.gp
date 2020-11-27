@@ -23,6 +23,7 @@ set format y2 "2^{%L}"
 set logscale y2 2
 set logscale y 2
 set auto x
+set xtics rotate out
 
 plot "bubble-sort.dat" every ::1 using 8:xticlabels(2) title col axes x1y2 linecolor "#9300d3", \
          "bubble-sort.dat" every ::1 using 12:xticlabels(2) title col axes x1y2 linecolor "#009e72", \
