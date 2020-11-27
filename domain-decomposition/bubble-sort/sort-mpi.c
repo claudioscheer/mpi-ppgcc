@@ -1,6 +1,3 @@
-// TO DO
-// - Count iterations number.
-
 #include "dataset-generator.h"
 #include <mpi.h>
 #include <stdio.h>
