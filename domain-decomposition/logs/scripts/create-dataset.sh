@@ -50,19 +50,30 @@ for p_np in "${percentage_items_shared_np[@]}"; do
     percentage=$(echo $p_np | awk '{ print $2 }')
     percentage_100=$(echo "$percentage * 100" | bc -l | cut -d. -f1)
     np=$(echo $p_np | awk '{ print $1 }')
-    row="$np $np-$percentage_100% 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "
-    tests=("bi")
-    for _test in "${tests[@]}"; do
-        file=$script_dir/../bubble-sort/mpi-$np-$percentage-$vector_size-*-$_test.txt
-        total_time=$(cat $file | grep -P "Time\ssort\s\(ms\):" | grep -Po "[0-9]+[.][0-9]+" | get_mean_std)
-        for element in $total_time; do
-            row="$row$element "
-        done
-        t=$(echo $total_time | awk '{ print $1 }')
-        speedup=$(echo "scale=8; $sequential_time / $t" | bc -l)
-        efficiency=$(echo "scale=8; $speedup / $np" | bc -l)
-        row="$row$speedup $efficiency "
+    row="$np $np-$percentage_100% 0 0 0 0 0 0 "
+
+    file=$script_dir/../bubble-sort/mpi-$np-$percentage-$vector_size-*-b.txt
+    total_time=$(cat $file | grep -P "Time\ssort\s\(ms\):" | grep -Po "[0-9]+[.][0-9]+" | get_mean_std)
+    for element in $total_time; do
+        row="$row$element "
     done
+    t=$(echo $total_time | awk '{ print $1 }')
+    speedup=$(echo "scale=8; $sequential_time / $t" | bc -l)
+    efficiency=$(echo "scale=8; $speedup / $np" | bc -l)
+    row="$row$speedup $efficiency "
+
+    row="$row 0 0 0 0 "
+
+    file=$script_dir/../bubble-sort/mpi-$np-$percentage-$vector_size-*-bi.txt
+    total_time=$(cat $file | grep -P "Time\ssort\s\(ms\):" | grep -Po "[0-9]+[.][0-9]+" | get_mean_std)
+    for element in $total_time; do
+        row="$row$element "
+    done
+    t=$(echo $total_time | awk '{ print $1 }')
+    speedup=$(echo "scale=8; $sequential_time / $t" | bc -l)
+    efficiency=$(echo "scale=8; $speedup / $np" | bc -l)
+    row="$row$speedup $efficiency "
+    
     echo $row >> $bubble_sort_dat_path
 done
 ## BUBBLE SORT ##
